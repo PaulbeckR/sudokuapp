@@ -1,1 +1,1 @@
-worker: python GraphicsBuild.py
+worker: python main.py
