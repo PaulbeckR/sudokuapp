@@ -1,4 +1,4 @@
-from GraphicsBuild import*
+from main import*
 
 
 def check_correct(new_game, complete_board):
