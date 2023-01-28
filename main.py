@@ -1,7 +1,13 @@
 import pygame
+import os
+import psycopg2
+
+DATABASE_URL = os.environ['DATABASE_URL']
+conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 
 from BuildPuzzle import *
 from PreparePuzzle import*
+from pygame.locals import *
 pygame.font.init()
 pygame.init()
 
