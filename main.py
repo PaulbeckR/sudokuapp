@@ -4,7 +4,7 @@ import os
 
 #DATABASE_URL = os.environ['DATABASE_URL']
 #conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-os.environ['SDL_VIDEODRIVER']=winib
+os.environ['SDL_VIDEODRIVER']=windlib
 
 
 from BuildPuzzle import *
