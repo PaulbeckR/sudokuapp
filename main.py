@@ -1,15 +1,20 @@
 import pygame
-#import os
+import os
 #import psycopg2
 
 #DATABASE_URL = os.environ['DATABASE_URL']
 #conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+os.environ['SDL_VIDEODRIVER']=winib
+
 
 from BuildPuzzle import *
 from PreparePuzzle import*
 from pygame.locals import *
 pygame.font.init()
 pygame.init()
+pygame.display.list_modes()
+
+screen = pygame.display.set_mode((500,600))
 
 complete_board = create_grid_fill()
 
@@ -25,7 +30,7 @@ new_game = new_game_board(complete_board)
 current_game = new_game
 
 background_color = (50,245,243)
-screen = pygame.display.set_mode((500,600))
+
 black = (0,0,0)
 x = 0
 y = 0
