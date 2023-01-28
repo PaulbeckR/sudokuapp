@@ -1,4 +1,4 @@
-import pygame 
+import pygame
 
 from BuildPuzzle import *
 from PreparePuzzle import*
