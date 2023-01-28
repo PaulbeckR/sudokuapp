@@ -8,7 +8,7 @@ print(sys.path)
 
 
 import pygame
-pygame.init()
+
 import os
 #import psycopg2
 
@@ -20,6 +20,8 @@ os.environ['SDL_VIDEODRIVER']= "directfb"
 from BuildPuzzle import *
 from PreparePuzzle import*
 from pygame.locals import *
+
+pygame.init()
 pygame.font.init()
 
 pygame.display.list_modes()
