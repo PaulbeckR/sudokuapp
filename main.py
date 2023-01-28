@@ -1,4 +1,5 @@
 import pygame
+pygame.init()
 import os
 #import psycopg2
 
@@ -11,7 +12,7 @@ from BuildPuzzle import *
 from PreparePuzzle import*
 from pygame.locals import *
 pygame.font.init()
-pygame.init()
+
 pygame.display.list_modes()
 
 screen = pygame.display.set_mode((500,600))
