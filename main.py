@@ -9,7 +9,7 @@ import pygame
 
 #DATABASE_URL = os.environ['DATABASE_URL']
 #conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-# os.environ['SDL_VIDEODRIVER']= "directfb"
+os.environ['SDL_VIDEODRIVER']= "dummy"
 
 
 from BuildPuzzle import *
