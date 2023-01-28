@@ -1,1 +1,2 @@
-worker: python main.py
+web: gunicorn sudokuapp:app
+    worker: python main.py
