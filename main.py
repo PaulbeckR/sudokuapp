@@ -1,32 +1,27 @@
 import sys
-print(sys.version)
-print(sys.executable)
-print(sys.path)
-
-
 
 
 
 import pygame
 
-import os
+# import os
 #import psycopg2
 
 #DATABASE_URL = os.environ['DATABASE_URL']
 #conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-os.environ['SDL_VIDEODRIVER']= "directfb"
+# os.environ['SDL_VIDEODRIVER']= "directfb"
 
 
 from BuildPuzzle import *
 from PreparePuzzle import*
-from pygame.locals import *
+# from pygame.locals import *
 
 pygame.init()
+screen = pygame.display.set_mode((500,600))
 pygame.font.init()
 
 pygame.display.list_modes()
 
-screen = pygame.display.set_mode((500,600))
 
 complete_board = create_grid_fill()
 
@@ -163,18 +158,23 @@ def result():
     text1 = font1.renter("Finished: press R or D", 1, black)
     screen.blit(text1, (20,570))
     
-run = True
+
+
+    
+
+   
 flag1= 0
 flag2=0
 rs=0
+  
 error = 0
     
-while run:
+pygame.display.set_caption("Sudoku!!!")
+while True:
     screen.fill((255,255,255))
     for event in pygame.event.get():
         
-        if event.type == pygame.QUIT:
-            run = False
+        
         if event.type == pygame.MOUSEBUTTONDOWN:
             flag1 = 1
             pos = pygame.mouse.get_pos()
@@ -234,7 +234,7 @@ while run:
                 new_game = current_game
         if flag2== 1:
             if solve(new_game,0,0) == False:
-                    error = 1
+                error = 1
             else:
                 rs = 1
                 flag2 = 0
@@ -254,9 +254,14 @@ while run:
         draw()
         if flag1==1:
             draw_box()
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
         instruction()
         pygame.display.update()
-pygame.quit()
+# pygame.quit()
+    
+
                 
                  
           
