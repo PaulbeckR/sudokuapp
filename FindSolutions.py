@@ -1,4 +1,4 @@
-from FindSolutions import *
+from PreparePuzzle import *
 
 # Now that I have a game board, I have started a solution with finding all single nums.
 
@@ -66,38 +66,41 @@ def only_option(gamegrid):
         for j in range(9):
             # if the length is greater than 1
 
-            print("ONLY_OPTION:: gamegrid position checked is:  ", gamegrid[i][j])
+            # print("ONLY_OPTION:: gamegrid position checked is:  ", gamegrid[i][j])
             if len(gamegrid[i][j]) > 1:
                 # for k in the range of nums stored in my array at [i][j]
                 # for my number in my list of numbers at a position.
                 for k in gamegrid[i][j]:
-                    print("Checking ", k, "of ", gamegrid[i][j])
+                    #print("Checking ", k, "of ", gamegrid[i][j])
 
                     if any(k in gamegrid[i][x] for x in range(9) if (i, x) != (i, j)):
-                        print(k, "was found to be in one or more ROWS")
+                        gamegrid[i][j] = gamegrid[i][j]
+                        #print(k, "was found to be in one or more ROWS")
 
                     else:
                         gamegrid[i][j] = [k]
                         change_count += 1
-                        print(k, "was NOT!!!! found to be in one or more ROWS", k, "is assigned to position",
-                              gamegrid[i][j])
+                        #print(k, "was NOT!!!! found to be in one or more ROWS", k, "is assigned to position",
+                        # gamegrid[i][j])
                         continue
 
                     if any(k in gamegrid[x][j] for x in range(9) if (x, j) != (i, j)):
-                        print(k, "was found to be in one or more COLS")
+                        #print(k, "was found to be in one or more COLS")
+                        gamegrid[i][j] = gamegrid[i][j]
 
                     else:
                         gamegrid[i][j] = [k]
                         change_count += 1
-                        print(k, "was NOT!!!! found to be in one or more COLS", k, "is assigned to position",
-                              gamegrid[i][j])
+                         #print(k, "was NOT!!!! found to be in one or more COLS", k, "is assigned to position",
+                        #      gamegrid[i][j])
                         continue
 
                     if any(k in gamegrid[x][y] for x in range(i - i % 3, i - i % 3 + 3) for y in
                            range(j - j % 3, j - j % 3 + 3) if (x, y) != (i, j)):
-                        print(k, "was found to be in one or more BOXES")
+                        # print(k, "was found to be in one or more BOXES")
+                        gamegrid[i][j] = gamegrid[i][j]
                     else:
-                        print(k, "was NOT!!!! found to be in one or more BOXES of ", gamegrid[i][j])
+                        # print(k, "was NOT!!!! found to be in one or more BOXES of ", gamegrid[i][j])
 
                         gamegrid[i][j] = [k]
                         change_count += 1
@@ -121,7 +124,7 @@ def only_option(gamegrid):
 
 
 def print_updated_grid(thisgrid):
-    print("printing updated grid")
+    # print("printing updated grid")
     for i in range(9):
         if i % 3 == 0 and i != 0:
             print("--------------+-----------------+-------------------")
@@ -158,9 +161,7 @@ def print_count(grid):
 
 # print("Squares completed after next grid" , print_count(next_grid))
 
-print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-print("Third TEST USING CREATE_Arrays NEXT")
-print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+
 
 
 # so now I have run through to check any single nums in an array
@@ -170,6 +171,10 @@ print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 # print("count of next_one" ,print_count(next_grid))
 
 def update_array(thisgrid):
+    print(":::::::::::::::::::::::::::::::::::")
+    print("UPDATING ARRAY :::: UPDATING ARRAY")
+    print(":::::::::::::::::::::::::::::::::::")
+    
     array_update = 0
     count = 0
     for i in range(0, len(thisgrid)):
@@ -180,35 +185,35 @@ def update_array(thisgrid):
 
                 # it's longer than one, check if any row/col/3x3 has matching
                 for element in thisgrid[i][j]:
-                    print("Element ", element, "is being checked from ", thisgrid[i][j])
+                    # print("Element ", element, "is being checked from ", thisgrid[i][j])
                     if any(element in thisgrid[i][x] for x in range(9) if (i, x) != (i, j)):
-                        print("it was found in one of the ROWS")
+                        # print("it was found in one of the ROWS")
 
                         for row_position in range(9):
                             if len(thisgrid[i][row_position]) > 1:
-                                print("ROW array", thisgrid[i][row_position], " > than 1 and checked 4 ", element)
+                                #print("ROW array", thisgrid[i][row_position], " > than 1 and checked 4 ", element)
                                 for n in thisgrid[i][row_position]:
-                                    print("element ", n, "is being checked against k")
+                                    #print("element ", n, "is being checked against k")
                                     if n == element and j != row_position:
-                                        print("n is equal to k and j is not equal to l")
+                                        #print("n is equal to k and j is not equal to l")
                                         thisgrid[i][row_position].remove(element)
                                         array_update += 1
-                                        print(element, "was removed from ", thisgrid[i][row_position])
+                                        #print(element, "was removed from ", thisgrid[i][row_position])
 
                     if any(element in thisgrid[x][j] for x in range(9) if (x, j) != (i, j)):
-                        print("it was found in one of the COLUMNS")
+                        #print("it was found in one of the COLUMNS")
 
                         for col_position in range(9):
                             if len(thisgrid[col_position][j]) > 1:
-                                print("this COLUMN ", thisgrid[col_position][j], "> 1, checking for ",   element)
+                                #print("this COLUMN ", thisgrid[col_position][j], "> 1, checking for ",   element)
                                 for n in thisgrid[col_position][j]:
-                                    print("element ", n, "is being checked against ", element)
+                                    #print("element ", n, "is being checked against ", element)
                                     if n == element and (i, j) != (col_position, j):
-                                        print("n is equal to k and j is not equal to l")
-                                        print("The array that needs to be adjusted is: ", thisgrid[col_position][j])
+                                        #print("n is equal to k and j is not equal to l")
+                                        #print("The array that needs to be adjusted is: ", thisgrid[col_position][j])
                                         thisgrid[col_position][j].remove(element)
                                         array_update += 1
-                                        print(element, "was removed from ", thisgrid[col_position][j])
+                                        #print(element, "was removed from ", thisgrid[col_position][j])
 
                     if num_inmini(thisgrid, element, (i, j)):
 
@@ -222,11 +227,11 @@ def update_array(thisgrid):
 
                                 for n in thisgrid[y][x]:
                                     if n == element and (i, j) != (y, x):
-                                        print("n is equal to k and j is not equal to x")
-                                        print("The array that needs to be adjusted is: ", thisgrid[y][x])
+                                        #print("n is equal to k and j is not equal to x")
+                                        #print("The array that needs to be adjusted is: ", thisgrid[y][x])
                                         thisgrid[y][x].remove(element)
                                         array_update += 1
-                                        print(element, "was removed from ", thisgrid[y][x])
+                                        #print(element, "was removed from ", thisgrid[y][x])
 
     return array_update, thisgrid
 
@@ -282,7 +287,9 @@ def test_if_equal(game_grid, original):
 
 
 def basic_solve(grid):
+    print(":::::::::::::::::::::::::::::::::::")
     print("STARTING BASIC SOLVE")
+    print(":::::::::::::::::::::::::::::::::::")
     change_count = 1
     # array_update = 1
 
@@ -302,5 +309,5 @@ def basic_solve(grid):
 change_count = 0
 array_update = 0
 
-# test_test = basic_solve(pos_nums_grid)
-# print_pos_grid(test_test)
+
+ 

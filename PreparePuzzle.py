@@ -67,11 +67,13 @@ possible_numbers_grid = [[0 for _ in range(9)] for _ in range(9)]
 def create_arrays(game_board):
 
     possible_nums = []
-    for i in range(0, len(game_board)):
-        for j in range(0, len(game_board)):
+    for i in range(9):
+        
+        for j in range(9):
             # May need to change this as it stores a single variable. Rather than storing all variables in
             # my possible_numbers_grid, I should leave them empty?
-            if game_board[i][j] != 0:
+            value = game_board[i][j]
+            if value >= 1:
                 # print("before pos nums" , game_board[i][j])
                 possible_nums = game_board[i][j]
                 # print("after first iter" , possible_nums)
@@ -114,9 +116,9 @@ def print_pos_grid(thisgrid):
             print(thisgrid[i][j], end="::")
         print()
 
-
-# pos_nums_grid = create_arrays(new_game)
+new_game = new_game_board(new_grid)
+pos_nums_grid = create_arrays(new_game)
 # print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 # print("Printing Pos_nums_grid: this is the grid that calls create_arrays")
 
-# print_pos_grid(pos_nums_grid)
+print_pos_grid(pos_nums_grid)

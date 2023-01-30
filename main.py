@@ -1,15 +1,15 @@
+
 import sys
-
-
 
 import pygame
 
-import os
+# import os
 #import psycopg2
 
 #DATABASE_URL = os.environ['DATABASE_URL']
 #conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-os.environ['SDL_VIDEODRIVER']= "dummy"
+# os.environ['SDL_VIDEODRIVER']= "dummy"#
+# port = int(os.environ.get("PORT", 5000))
 
 
 from BuildPuzzle import *
@@ -17,7 +17,7 @@ from PreparePuzzle import*
 # from pygame.locals import *
 
 pygame.init()
-screen = pygame.display.set_mode((500,600))
+screen = pygame.display.set_mode((800,800))
 pygame.font.init()
 
 pygame.display.list_modes()
@@ -54,7 +54,7 @@ font2 = pygame.font.SysFont("comicsans", 20)
 def cord(pos):
     global x 
     x = pos[0]//diff
-    global z 
+    global y 
     y = pos[1]//diff
                 
 
@@ -66,15 +66,15 @@ def draw_box():
 
 # creates the drawn box with gridlines.     
 def draw():
-    for i in range(9):
-        for j in range(9):
+    for j in range(9):
+        for i in range(9):
             if new_game[i][j] != 0:
                 #fills already complete numbers with blue.
-                pygame.draw.rect(screen, (152,245,255), (i * diff, j * diff, diff + 1, diff + 1))
+                pygame.draw.rect(screen, (152,245,255), (j * diff, i * diff, diff + 1, diff + 1))
                 
                 #Fills in given numbers and centers them.
                 text1=font1.render(str(new_game[i][j]),1,black)                
-                screen.blit(text1, (i*diff + 15, j * diff + 1))
+                screen.blit(text1, (j*diff + 15, i * diff + 1))
                 
     for i in range(10):
         if i % 3 == 0:
@@ -155,7 +155,7 @@ def instruction():
     screen.blit(text2,(20,540))
     
 def result():
-    text1 = font1.renter("Finished: press R or D", 1, black)
+    text1 = font1.render("Finished: press R or D", 1, black)
     screen.blit(text1, (20,570))
     
 
