@@ -1,4 +1,6 @@
+import copy
 from FindSolutions import *
+from TestingDisplay import *
 
 ''''
 Script to support advanced solve solutions. From https://www.sudokuoftheday.com/techniques/hidden-pairs-triples
@@ -50,81 +52,169 @@ removed , as well as the 1,3 from the subsequent row/col/3x3 positions.
 # from two seperate squares.
 def perfect_pairs(grid):
     # start comparisons with first element.
+    print(":::::::::::::::::::::::::::::::::::")
+    print("STARTING PERFECT PAIRS TEST")
+    print(":::::::::::::::::::::::::::::::::::")
     for i in range(9):
         for j in range(9):
 
             # only if it is more than 1. Ideally for simplicity, it would be length 2 or 3
-            if len(grid[i][j]) == 2:  # or len(grid[i][j]) ==3:
-                print("This is the current array being checked ", grid[i][j])
+            if len(grid[i][j]) == 2: 
+                
+                print("::::::::::::CURRENT ARRAY IS ", grid[i][j], "at location ", (i,j))
                 # then the array I want to compare first will be [i][j]. AND i want to compare for the row,
                 # col and box.
 
-                first_arr = grid[i][j]
-                for l in range(9):
-                    if len(grid[i][l]) == 2:  # or len(grid[i][l]) == 3:
-                        print("Comparing first_arr to ", grid[i][l])
+                first_array = grid[i][j]
+                
+                # check all of row for other pairs: 
+                for col_ofrowcheck in range(9):
+                    
+                    # only if the row array is a length of 2
+                    if len(grid[i][col_ofrowcheck]) == 2:  
+                        print("Comparing first_arr to ", grid[i][col_ofrowcheck], "at ROW location ", (i,col_ofrowcheck))
+                        
+                        pair_row = grid[i][col_ofrowcheck]
                         # if the first arr and the position being searched are a match (and not the same location)
-                        if first_arr == grid[i][l] and (i, j) != (i, l):
-                            print("Found a perfect pair in the ROW")
+                        if set(first_array) == set(pair_row) and (i, j) != (i, col_ofrowcheck):
+                            print("PERFECT PAIR IS IN THE ROW")
                             # IF I WANT TO CHECK MORE THAN TWO, this needs to change. Count if onl 2 spots.
                             # create array based on shared numbers.
-                            numbers_to_remove = first_arr
+           
+                            numbers_to_remove = first_array
+                            
+                            #loop through ROW and check if any other arrays contain numbers from PAIR. 
                             for r in range(9):
-                                if len(grid[i][r]) > 1 and (i, r) != (i, j) and (i, l):
-                                    for n in grid[i][r]:
-                                        print("checking each N in ", grid[i][r])
-                                        if n in numbers_to_remove:
-                                            print(n, "was removed from ", grid[i][r])
+                                # Array to remove must be greater than 1 (not a solved square) and not either pair location. and STATEMENT.
+                                if (i, r) != (i, j) and (i,r) != (i, col_ofrowcheck):
+                                    # for number in square array
+                                    for value in numbers_to_remove:
+                                        # print("checking" , n ,"in ", grid[i][r], "at ROW location ", (i,r))
+                                        if value in grid[i][r]:
+                                            print(value, " needs to BE removed from  ", grid[i][r], "at ROW location ", (i,r))
 
-                                            grid[i][r].remove(n)
-                                            print(n, "was removed from ", grid[i][r])
+                                            grid[i][r].remove(value)
+                                            print(value, "was removed from ", grid[i][r], "at ROW location ", (i,r))
 
-                for v in range(9):
-                    if len(grid[v][i]) == 2:  # or len
-                        print("comparing first_arr to ", grid[v][j])
-                        if first_arr == grid[v][j] and i != v:
-                            print("Found a perfect pair in the COLUMN")
-                            numbers_to_remove = first_arr
+                for row_ofcolcheck in range(9):
+                    #for each row of the current column: check only arrays of a length of two.
+                    pair_col = grid[row_ofcolcheck][j]
+                    
+                    if len(pair_col) == 2:  
+                        
+                                                
+                        print("comparing first_arr to ", pair_col, "at COL location ", (row_ofcolcheck,j))
+                        #if the search array matches the compared square array location is not the same as my current square:
+                        if set(first_array) == set(pair_col) and  (i,j) != (row_ofcolcheck,j):
+                            
+                            print("PERFECT PAIR in the COLUMN", pair_col, "at COL location", (row_ofcolcheck,j))
+                            
+                            numbers_to_remove = first_array
+                            
+                            # because there is a perfect pair, I will loop again to check all squares of the same COLUMN                            
                             for r in range(9):
-                                if len(grid[r][j]) > 1 and r != i and v:
-                                    for n in grid[r][j]:
-                                        print("checking each N in ", grid[r][j])
-                                        if n in numbers_to_remove:
-                                            print(n, "was removed from ", grid[r][j])
+                                # If the length of my new search square is more than 1 (not a solved square), and is not the same location of either pair AND
+                                if (r,j) != (i,j)  and  (r,j) != (row_ofcolcheck,j):
+                                    #look at each number in my new search array                                    
+                                    for value in first_array: 
+                                        
+                                        print("checking", value, " in ", grid[r][j], "at COL location ", (r,j))
+                                        
+                                        if value in grid[r][j]:
+                                            print(value, " needs to be removed from  ", grid[r][j], "at COL location ", (r,j))
 
-                                            grid[r][j].remove(n)
-                                            print(n, "was removed from ", grid[r][j])
+                                            grid[r][j].remove(value)
+                                            
+                                            print(value, "was removed from ", grid[r][j], "at COL location ", (r,j))
                 box_start_row = i // 3
                 box_start_col = j // 3
 
-                for row_element in range(box_start_row * 3, box_start_row * 3 + 3):
-                    for col_element in range(box_start_col * 3, box_start_col * 3 + 3):
+                for row_pos in range(box_start_row * 3, box_start_row * 3 + 3):
+                    for col_pos in range(box_start_col * 3, box_start_col * 3 + 3):
+                        
                         # for each element of my square, find one that only has two elements.
-                        if len(grid[row_element][col_element]) == 2:
-                            # set to variable compare for easier typing. This is same as first_arr
-                            compare = grid[row_element][col_element]
+                        if len(grid[row_pos][col_pos]) == 2:
+                            
+                            # Create compare variable:
+                            pair_box = grid[row_pos][col_pos]
                             # if compare and first_arr are the same NUMBERS, but NOT the same position:
-                            if first_arr == compare and (i, j) != (row_element, col_element):
-                                print("fount a perfect pair in the BOX ", grid[row_element][col_element],
-                                      (row_element, col_element))
+                            if first_array == pair_box and ( (i, j) != (row_pos, col_pos)):
+                                
+                                print("fount a perfect pair in the BOX ", pair_box,  "at location ",  (row_pos, col_pos))
+                                
                                 # I found a pair, now I want to search for any other numbers that are in remaining arrays.
-                                numbers_to_remove = first_arr
+                                numbers_to_remove = first_array
+                                print(numbers_to_remove, " are my numbers to remove that match my first array:", first_array)
+                                
                                 # search through box again.
                                 for alt_box_row in range(box_start_row * 3, box_start_row * 3 + 3):
                                     for alt_box_col in range(box_start_col * 3, box_start_col * 3 + 3):
-                                        # look inside any that are greater than 1
-                                        if len(grid[alt_box_row][alt_box_col]) > 1:
-                                            for number in grid[alt_box_row][alt_box_col]:
-                                                print("checking each number ", number, "in",
-                                                      grid[alt_box_row][alt_box_col], (alt_box_row, alt_box_col))
-                                                # if the number exists in my numbers to remove AND its NOT in the i,j position or my second pair position:
-                                                if number in numbers_to_remove and (alt_box_row, alt_box_col) != (
-                                                i, j) and (row_element, col_element):
-                                                    print(number, "was removed from ", grid[alt_box_row][alt_box_col])
-                                                    grid[alt_box_row][alt_box_col].remove(number)
-                                                    print(number, "was removed from ", grid[alt_box_row][alt_box_col])
+                                        
+                                        box_square_to_remove = grid[alt_box_row][alt_box_col]
+                                        
+                                        # look at squares with arrays greater than 1
+                                        if (alt_box_row, alt_box_col) != (i, j) and (alt_box_row, alt_box_col) != (row_pos, col_pos):
+                                            # look inside the array
+                                            for value in box_square_to_remove:
+                                                
+                                                print("checking each number ", value, "in", box_square_to_remove, "at BOX location" ,(alt_box_row, alt_box_col))
+                                                
+                                                # if the number exists in my numbers to remove AND its NOT in the i,j position AND my second pair position:
+                                                if value in numbers_to_remove:
+                                                    
+                                                    print(value, "Needs to be removed ", grid[alt_box_row][alt_box_col], "at BOX location", (alt_box_row, alt_box_col))
+                                                    
+                                                    box_square_to_remove.remove(value)
+                                                    
+                                                    
+                                                    print(value, "was removed from ", grid[alt_box_row][alt_box_col], "at location", (alt_box_row, alt_box_col))
+                                                    
+    basic_solve(grid)
     return grid
 
 
-#hope  = perfect_pairs(pos_nums_grid)
-#print_updated_grid(pos_nums_grid)
+print_updated_grid(pos_nums_grid)
+test_test = basic_solve(pos_nums_grid)
+original_test_test = copy.deepcopy(test_test)
+
+
+
+print_pos_grid(original_test_test)
+print("Total solved in test_test (Find Solutions)")
+print_count(original_test_test)
+
+
+hope  = perfect_pairs(test_test)
+
+print("Printing HOPE")
+print_updated_grid(hope)
+print("Total solved after perfect pairs")
+print_count(hope)
+
+
+print("basic solve PRINT")
+print_updated_grid(original_test_test)
+
+array_display(original_test_test)
+
+array_display(hope)
+
+
+'''
+Additional Steps:
+
+
+Create helper function for finding matching pairs? Or helper remove function? 
+
+
+Expand for hidden pairs and triples?
+
+
+
+
+
+
+'''
+
+
+

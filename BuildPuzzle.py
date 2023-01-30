@@ -63,9 +63,9 @@ def print_grid(grid):
         print()
 
 
-# new_grid = create_grid_fill()
+new_grid = create_grid_fill()
 
-# print_grid(new_grid)
+print_grid(new_grid)
 
 # print(new_grid)
 
