@@ -8,11 +8,11 @@ base = 3
 side = base*base
 
 # method for removing numbers. Mirroring?
-game_board = []
+game = []
 
 
 def new_game_board(grid):
-
+    game_board = []
     squares = side*side
     empties = squares * 9 // 13
     for p in sample(range(squares), empties):
@@ -44,7 +44,7 @@ def completed_count(game_board):
     completed = 0
     for i in range(9):
         for j in range(9):
-            if game_board[i][j] != 0:
+            if len(game_board[i][j] )==  1:
                 completed += 1
     return completed
 
@@ -116,9 +116,9 @@ def print_pos_grid(thisgrid):
             print(thisgrid[i][j], end="::")
         print()
 
-new_game = new_game_board(new_grid)
-pos_nums_grid = create_arrays(new_game)
+#new_game = new_game_board(new_grid)
+#pos_nums_grid = create_arrays(new_game)
 # print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 # print("Printing Pos_nums_grid: this is the grid that calls create_arrays")
 
-print_pos_grid(pos_nums_grid)
+#print_pos_grid(pos_nums_grid)

@@ -138,7 +138,7 @@ def print_updated_grid(thisgrid):
 
 
 # print_updated_grid(next_grid)
-print("end of next_grid")
+#print("end of next_grid")
 
 
 def print_count(grid):
@@ -217,7 +217,7 @@ def update_array(thisgrid):
 
                     if num_inmini(thisgrid, element, (i, j)):
 
-                        print("it was found in one of the BOXES")
+                        #print("it was found in one of the BOXES")
 
                         box_x = j // 3  # j
                         box_y = i // 3  # i
