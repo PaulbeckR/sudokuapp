@@ -55,12 +55,10 @@ def perfect_pairs(grid):
     for i in range(9):
         for j in range(9):
 
-            # only if it is more than 1. Ideally for simplicity, it would be length 2 or 3
             if len(grid[i][j]) == 2: 
                 
                 #print("::::::::::::CURRENT ARRAY IS ", grid[i][j], "at location ", (i,j))
-                # then the array I want to compare first will be [i][j]. AND i want to compare for the row,
-                # col and box.
+              
 
                 first_array = grid[i][j]
                 
@@ -173,38 +171,16 @@ def perfect_pairs(grid):
 #print_updated_grid(pos_nums_grid)
 #test_test = basic_solve(pos_nums_grid)
 #original_test_test = copy.deepcopy(test_test)
-
-
-
-#print_pos_grid(original_test_test)
-#print("Total solved in test_test (Find Solutions)")
-#print_count(original_test_test)
-
-
 #hope  = perfect_pairs(test_test)
 
 #print("Printing HOPE")
-#print_updated_grid(hope)
-#print("Total solved after perfect pairs")
-#print_count(hope)
 
 
-#print("basic solve PRINT")
-#print_updated_grid(original_test_test)
-
-#array_display(original_test_test)
-
-#array_display(hope)
 
 
 '''
 Additional Steps:
 
-
-Create helper function for finding matching pairs? Or helper remove function? 
-
-
-Expand for hidden pairs and triples?
 
 
 

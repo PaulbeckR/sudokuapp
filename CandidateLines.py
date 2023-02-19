@@ -101,6 +101,8 @@ def box_lists(grid, box):
             else:
                 #print("adding to single_row", 0 , "at ", (line, item))
                 
+                # CONSIDER ADDING REMOVE: statement if number in position is not in available nums
+                
                 single_row.update(grid[line][item])
         
         box_rows.append(single_row)
