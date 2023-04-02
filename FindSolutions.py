@@ -68,20 +68,22 @@ def num_inmini(gridagain, myint, pos):
 def as_list(grid):
     for i in range(9):
         for j in range(9):
+            #print("here I am", grid[i][j])
             if type(grid[i][j]) is not list: grid[i][j] = [grid[i][j]]
     return grid
             
 
 
 def only_option(gamegrid):
-    print("-------------------------------")
-    print("START OF ONLY OPTION")
-    print("--------------------------------")
+   # print("-------------------------------")
+  #  print("START OF ONLY OPTION")
+   # print("--------------------------------")
     gamegrid = as_list(gamegrid)
     change_count = 0
+    oo_dict = dict()
     for i in range(9):
         for j in range(9):
-            # if the length is greater than 1
+            
 
         
             if type(gamegrid[i][j]) is not list: gamegrid[i][j] = [gamegrid[i][j]]
@@ -89,31 +91,16 @@ def only_option(gamegrid):
               
               
                 for k in gamegrid[i][j]:
-                    # print("Checking ", k, "of ", gamegrid[i][j])
-                    # count = 0
-                    # for x in range(9):
-                    #     check_square = gamegrid[i][x]
-                    #     if isinstance(check_square, int):
-                    #         if (k == check_square) and ((i, x) != (i, j)):
-                    #             gamegrid[i][j] = gamegrid[i][j]
-                    #             count += 1
-                    #     elif isinstance(check_square, list):
-                    #         for ele in check_square:
-                    #             if (k == ele) and ((i,x) != (i,j)):
-                    #                 gamegrid[i][j] = gamegrid[i][j]
-                    #                 count += 1
-                    # if count == 0:
-                    #     gamegrid[i][j] = k
-                    #     change_count += 1
-                    #     continue
+                    
 
                     if any(k in gamegrid[i][x] for x in range(9) if (i, x) != (i, j)):
                             gamegrid[i][j] = gamegrid[i][j]
                             #print(k, "was found to be in one or more ROWS")
                     else:
-                        print(k, "was NOT!!!! found in ROWS: assigned to" ,(i,j), gamegrid[i][j])
+                        #print("OO: ROWS ", (i,j), "removed ",  k, "array: " , gamegrid[i][j])
 
                         gamegrid[i][j] = [k]
+                        oo_dict[(i,j)] = k
                         change_count += 1
                         continue
 
@@ -124,8 +111,9 @@ def only_option(gamegrid):
                         gamegrid[i][j] = gamegrid[i][j]
 
                     else:
-                        print(k, "was NOT!!!! found in COLS: assigned to" ,(i,j), gamegrid[i][j])
+                        #print("OO: ROWS ", (i,j), "removed ",  k, "array: " , gamegrid[i][j])
                         gamegrid[i][j] = [k]
+                        oo_dict[(i,j)] = k
                         change_count += 1
                         
                         continue
@@ -136,14 +124,18 @@ def only_option(gamegrid):
                         gamegrid[i][j] = gamegrid[i][j]
                             
                     else:
-                        print(k, "was NOT!!!! found to be in one or more BOXES of ", (i,j), gamegrid[i][j])
+                        #print("OO: ROWS ", (i,j), "removed ",  k, "array: " , gamegrid[i][j])
 
                         gamegrid[i][j] = [k]
+                        oo_dict[(i,j)] = k
                         change_count += 1
                         #print( "Position is now: ", gamegrid[i][j])
                             
                         continue
-    #print("change count is ", change_count)
+    # if change_count > 0:
+    #     print("change count is ", change_count)
+    #     print("DICT OF new clues: only_option")
+    #     print(oo_dict)
 
     return change_count, gamegrid
 
@@ -182,14 +174,16 @@ def print_count(grid):
 
 
 def update_array(thisgrid):
-    print(":::::::::::::::::::::::::::::::::::")
-    print("UPDATING ARRAY :::: UPDATING ARRAY")
-    print(":::::::::::::::::::::::::::::::::::")
-    
+   # print(":::::::::::::::::::::::::::::::::::")
+    #print("UPDATING ARRAY :::: UPDATING ARRAY")
+   # print(":::::::::::::::::::::::::::::::::::")
+    thisgrid = as_list(thisgrid)
     array_update = 0
     count = 0
+    UA_dict = dict()
     for i in range(0, len(thisgrid)):
         for j in range(0, len(thisgrid)):
+
             # if grid is equal to 1 do nothing
             if len(thisgrid[i][j]) == 1:
                 #print("Checking this array" , thisgrid[i][j])
@@ -206,11 +200,22 @@ def update_array(thisgrid):
                                 for n in thisgrid[i][row_position]:
                                    
                                     if n == element and j != row_position:
-                                        
-                                        #print(element, "was removed from ", thisgrid[i][row_position], "at", (i,row_position))
+                                            if len(thisgrid[i][row_position]) == 2:
+                            
+                                                #print("UA ROW : ", (i,row_position), "removed ", element, "array: ", thisgrid[i][row_position])
 
-                                        thisgrid[i][row_position].remove(element)
-                                        array_update += 1
+                                                thisgrid[i][row_position].remove(element)
+                                                if type(thisgrid[i][row_position]) is not list: thisgrid[i][row_position] = [thisgrid[i][row_position]]
+                                                thisgrid = mini_arr_update(thisgrid, (i, row_position))
+                                                array_update += 1
+                                                UA_dict[(i,row_position)] = thisgrid[i][row_position]
+                                            else:
+                                                #print("UA ROW : ", (i,row_position), "removed ", element, "array: ", thisgrid[i][row_position])
+
+                                                thisgrid[i][row_position].remove(element)
+                                                array_update += 1 
+                                        
+                                        
                         
                                     
                                        
@@ -223,10 +228,19 @@ def update_array(thisgrid):
                                 for n in thisgrid[col_position][j]:
                                     
                                     if n == element and (i, j) != (col_position, j):
+                                        if len(thisgrid[col_position][j]) == 2:
                                        
-                                        #print(element, "was removed from ", thisgrid[col_position][j], "at", (col_position,j))
-                                        thisgrid[col_position][j].remove(element)
-                                        array_update += 1
+                                            #print("UA COL : ", (col_position,j), "removed ", element, "array: ", thisgrid[col_position][j])
+                                            thisgrid[col_position][j].remove(element)
+                                            thisgrid = mini_arr_update(thisgrid, (col_position, j))
+                                            array_update += 1
+                                            UA_dict[(col_position,j)] = thisgrid[col_position][j]
+
+                                        else:
+                                            #print("UA COL : ", (col_position,j), "removed ", element, "array: ", thisgrid[col_position][j])
+                                            thisgrid[col_position][j].remove(element)
+                                            
+                                            array_update += 1
                        
 
                     if num_inmini(thisgrid, element, (i, j)):
@@ -245,14 +259,216 @@ def update_array(thisgrid):
                                     
                                     
                                         if n == element and (i, j) != (y, x):
-                                        
-                                            thisgrid[y][x].remove(element)
-                                           # print(element, "was removed from ", thisgrid[y][x], "at", (y,x))
-                                            array_update += 1
-  
-    return array_update, thisgrid
-                                        
+                                            if len(thisgrid[y][x]) == 2:
+                                                #print("UA BOX: ",(y,x), "removed ",  element, " array: ", thisgrid[y][x])
+                                                thisgrid[y][x].remove(element)
+                                                thisgrid = mini_arr_update(thisgrid, (y,x))
+                                                array_update += 1
+                                                UA_dict[(y,x)] = thisgrid[y][x]
 
+                                            else:
+                                                #print("UA BOX: ",(y,x), "removed ",  element, " array: ", thisgrid[y][x])
+
+                                                thisgrid[y][x].remove(element)
+                                                array_update += 1
+    # if array_update > 0:
+    #     print("Total removed in update_array", array_update)
+    #     print("UA DICT ")
+    #     print(UA_dict)
+    return array_update, thisgrid
+
+def mini_arr_update(grid, position):
+    
+    row = position[0]
+    col = position[1]
+    array_update = 0
+    MAU_dict = dict()
+    
+    
+    #if len(grid[row][col]) == 1:
+                #print("Checking this array" , thisgrid[i][j])
+    rem_num = grid[row][col]
+    if type(rem_num) is not int: [rem_num] = rem_num
+ 
+    #print("mini arr updating ", rem_num)
+
+               
+        
+                   
+    if any(rem_num in grid[row][x] for x in range(9) if (row, x) != (row, col)):
+                       
+        #print(rem_num, "was found in the ROW", row)
+
+        for row_position in range(9):
+            if len(grid[row][row_position]) > 1:
+                              
+                for n in grid[row][row_position]:
+                                   
+                    if n == rem_num and col != row_position:
+                        if len(grid[row][row_position]) == 2:
+                            
+                           # print("Mini_arr ROW : ", (row,row_position), "removed ", rem_num, "array: ", grid[row][row_position])
+
+                            grid[row][row_position].remove(rem_num)
+                            if type(grid[row][row_position]) is not list: grid[row][row_position] = [grid[row][row_position]]
+                            MAU_dict[(row,row_position)] = grid[row][row_position]
+                            grid = mini_arr_update(grid, (row, row_position))
+                            array_update += 1 
+                            
+
+                        else:
+                           # print("Mini_arr ROW : ", (row,row_position), "removed ", rem_num, "array: ", grid[row][row_position])
+
+                            grid[row][row_position].remove(rem_num)
+                            array_update += 1 
+                            
+                        
+                                    
+                                       
+    if any(rem_num in grid[x][col] for x in range(9) if (x, col) != (row, col)):
+        #print(rem_num, "was found in the COLUMN", col)
+
+        for col_position in range(9):
+            if len(grid[col_position][col]) > 1:
+                                
+                for n in grid[col_position][col]:
+                                    
+                    if n == rem_num and (row, col) != (col_position, col):
+                        if len(grid[col_position][col]) == 2:
+                            
+                           # print("Mini_arr COL : ", (col_position,col), "removed ", rem_num, "array: ", grid[col_position][col])
+
+                            grid[col_position][col].remove(rem_num)
+                            if type(grid[col_position][col]) is not list: grid[col_position][col] = [grid[col_position][col]]
+                            MAU_dict[(col_position,col)] = grid[col_position][col]
+                            grid = mini_arr_update(grid, (col_position, col))
+                            array_update += 1 
+                            
+
+                        else:
+                           # print("Mini_arr COL : ", (col_position,col), "removed ", rem_num, "array: ", grid[col_position][col])
+
+                            grid[col_position][col].remove(rem_num)
+                            array_update += 1 
+                                       
+                        
+                       
+
+    if num_inmini(grid, rem_num, (row, col)):
+
+        #print(rem_num, "it was found in one of the BOXES", (row,col))
+
+        box_x = col // 3  # j
+        box_y = row // 3  # i
+        for y in range(box_y * 3, box_y * 3 + 3):
+
+            for x in range(box_x * 3, box_x * 3 + 3):
+                                
+                if len(grid[y][x]) > 1:
+
+                    for n in grid[y][x]:
+                                    
+                                    
+                        if n == rem_num and (row, col) != (y, x):
+                            if len(grid[y][x]) == 2:
+                               # print("MINI ARR BOX: " ,(y,x), "removed", rem_num, "array: ", grid[y][x])
+
+                                grid[y][x].remove(rem_num)
+                                MAU_dict[(y,x)] = grid[y][x]
+                                grid = mini_arr_update(grid, (y,x))
+                                array_update += 1
+                                
+
+                            else: 
+                               # print("MINI ARR BOX: " ,(y,x), "removed", rem_num, "array: ", grid[y][x])
+
+                                grid[y][x].remove(rem_num)
+                                array_update += 1
+    # if len(MAU_dict) != 0:
+    #     print("mini array update removed", array_update)
+    
+        # print("DICT IN Mini ARR update")
+        # print(MAU_dict)
+    return grid
+    
+    
+    
+                                        
+def only_option2(gamegrid):
+     # print("-------------------------------")
+  #  print("START OF ONLY OPTION")
+   # print("--------------------------------")
+    gamegrid = as_list(gamegrid)
+    '''Create dictionary of positions and numbers set as clue'''
+    oo_dict = dict()
+    change_count = 0
+    for i in range(9):
+        for j in range(9):
+            # if the length is greater than 1
+            array = gamegrid[i][j]
+
+        
+            if type(gamegrid[i][j]) is not list: gamegrid[i][j] = [gamegrid[i][j]]
+            if len(gamegrid[i][j]) > 1:
+              
+              
+                for k in gamegrid[i][j]:
+                   
+
+                    if any(k in gamegrid[i][x] for x in range(9) if (i, x) != (i, j)):
+                            gamegrid[i][j] = gamegrid[i][j]
+                            #print(k, "was found to be in one or more ROWS")
+                    else:
+                        #print("OO ROWS: ", (i,j), "is now ",k,  gamegrid[i][j])
+                        
+
+                        gamegrid[i][j] = [k]
+                        
+                        oo_dict[(i,j)] = k
+                        
+                        gamegrid = mini_arr_update(gamegrid, (i,j))
+                        change_count += 1 
+                        continue
+
+                   
+
+                    if any(k in gamegrid[x][j] for x in range(9) if (x, j) != (i, j)):
+                      
+                        gamegrid[i][j] = gamegrid[i][j]
+
+                    else:
+                        #print("OO COLS: ", (i,j), "is now ",k,  gamegrid[i][j])
+                        gamegrid[i][j] = [k]
+                        oo_dict[(i,j)] = k
+                        
+                        gamegrid = mini_arr_update(gamegrid, (i,j))
+                        change_count += 1 
+
+                        continue
+
+                    if any(k in gamegrid[x][y] for x in range(i - i % 3, i - i % 3 + 3) for y in
+                        range(j - j % 3, j - j % 3 + 3) if (x, y) != (i, j)):
+                        #print(k, "was found to be in one or more BOXES")
+                        gamegrid[i][j] = gamegrid[i][j]
+                            
+                    else:
+                        #print("OO BOXES: ", (i,j), "is now ",k,  gamegrid[i][j])
+
+                        gamegrid[i][j] = [k]
+                        oo_dict[(i,j)] = k
+                        gamegrid = mini_arr_update(gamegrid, (i,j))
+
+                        change_count += 1 
+                        
+                            
+                        continue
+    # if change_count > 0:       
+                
+        # print("Total changed in only option 2 ")   
+        # print("New Clues from only option")
+        # print(oo_dict)
+
+    return change_count, gamegrid
    
 
 
@@ -268,12 +484,38 @@ def test_if_equal(game_grid, original):
             #print(t , "is t ")
             if type(t) is not int: [t] = t
             if o != t:
-                print("Doesnt match at original/ test ", (i,j) , o , t )
+               # print("Doesnt match at original/ test ", (i,j) , o , t )
                 return False
     return True
                 
             
-            
+def basic_solve2(grid):
+    change_count = 1
+    # array_update = 1
+    oo_rem = 0
+    array_up = 0
+
+    while change_count > 0:
+        oo_count, grid = only_option2(grid)
+        oo_rem += oo_count
+        array_up += array_up
+        array_update, grid = update_array(grid)
+        
+        
+                
+        
+        #print(print_count(grid))
+        #print("array_update ", (array_update + oo_count))
+       
+        change_count = oo_count + array_update
+        
+        # add solved_squares valid 
+
+    total_removed = oo_rem + array_up
+
+
+    return grid , total_removed
+         
             
             
 
@@ -285,29 +527,28 @@ def test_if_equal(game_grid, original):
 
 
 def basic_solve(grid):
-    print(":::::::::::::::::::::::::::::::::::")
-    print("STARTING BASIC SOLVE")
-    print(":::::::::::::::::::::::::::::::::::")
+   # print(":::::::::::::::::::::::::::::::::::")
+    #print("STARTING BASIC SOLVE")
+   # print(":::::::::::::::::::::::::::::::::::")
     change_count = 1
     # array_update = 1
 
-    while change_count > 0:
-        change_count, grid = only_option(grid)
+    while change_count != 0:
+        oo_count, grid = only_option(grid)
                 
         array_update, grid = update_array(grid)
-        print(print_count(grid))
-        print("change_count ", change_count)
-        print("array_update ", array_update)
-        
+        #print(print_count(grid))
+       # print("change_count ", change_count)
+       # print("array_update ", array_update)
+        change_count = oo_count + array_update
         
         # add solved_squares valid 
 
-        if (change_count == 0) and (array_update == 0):
-            break
+        
         
     changes = change_count + array_update
 
-    return grid , changes
+    return grid , change_count
 
 # change_count = 0
 # array_update = 0

@@ -193,7 +193,7 @@ def xwing_id(line_dict,  grid ,line_type = True):
                                     
                                     row_items[number] = position_list
                                     #print("FOUND X WING FOR NUMS::::::::::::::::::::")
-                                    print(row_items)
+                                    #print(row_items)
                                 
                                     grid, count = remove_xwings(grid, row_items, line_type)
                                     total_removed += count
@@ -245,7 +245,7 @@ def remove_xwings(grid,  row_items, line_type):
                     #print("c is ", c)
                     if len(grid[i][c]) > 1:                
                         if (number in grid[i][c]) and (i not in rows):
-                           # print("number found ", grid[i][c], "at", (i,c))
+                            #print("XWING number found to remove", number, "at position ", (i,c))
                             grid[i][c].remove(number)
                             count += 1
               
@@ -254,7 +254,7 @@ def remove_xwings(grid,  row_items, line_type):
                 for r in rows:
                     if len(grid[r][i]) > 1:
                         if (number in grid[r][i]) and (i not in cols):
-                            #print("number found ", grid[r][i], "at", (r,i))
+                            #print("XWING remove", number, "at position ", (r,i))
                             grid[r][i].remove(number)
                             count += 1
         
@@ -275,10 +275,10 @@ def remove_xwings(grid,  row_items, line_type):
                             for j in range(box1[1] *3, box1[1]*3 + 3):
                                # print(j, "is j")
                                 if (i,j) not in positions:
-                                    if number in grid[i][j]:
-                                       # print("looking at square", (i,j), "to remove num", number)
+                                    if (number in grid[i][j]) and (len(grid[i][j]) > 1):
+                                        #print("looking at square", (i,j), "to remove num", number)
                                         grid[i][j].remove(number)
-                                       # print("removed ", number, "at ", grid[i][j])
+                                       # print("XWING removed ", number, "at position ", (i,j))
                     
     
     return grid, count

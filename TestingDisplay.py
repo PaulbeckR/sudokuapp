@@ -90,6 +90,7 @@ def array_display(grid,title):
             for i in range(9):
                 #if grid[i][j] != 0:
                 #fills already complete numbers with blue.
+                if type(grid[i][j]) is int: grid[i][j] = [grid[i][j]]
                 if len(grid[i][j]) == 1:
                     pygame.draw.rect(screen, (152,245,255), (j * diff, i * diff, diff + 1, diff + 1))
                 

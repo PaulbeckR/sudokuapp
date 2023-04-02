@@ -262,7 +262,89 @@
 # print_grid(lkj)
 
 
-      
+def try_to_solve (array2, zeros2):
+    
+    #arraysadd = add_arrays(array2)
+    arrayrun = runthrough3(array2)
+    
+   # print("AFTER FIRST RUN")
+    #print_pos_grid(arrayrun)
+   # print("solved squares after runthrough", solved_square(arrayrun))
+    
+    arrayb = copy.deepcopy(arrayrun)
+    zeros = copy.deepcopy(zeros2)
+    
+    
+    print("START OF TRY TO SOLVE: should have arrays")
+    
+ 
+   # print_pos_grid(arrayb)
+    
+    trycount = 1
+
+    if find_array(arrayb) == None:
+        print("no arrays")
+        #print(arrayb)
+        #return trycount
+    
+    if clue_count(arrayb) == 81:
+        return trycount
+
+     
+    
+    #print("rand backup is ", rand_backup, "at" , (rand_row, rand_col))
+
+    while find_array(arrayb) != None:   
+        first_rand = find_array(arrayb)
+        print("first rand is ", first_rand)
+        
+        rand_row = first_rand[0]
+        rand_col = first_rand[1] 
+        rand_backup = arrayb[rand_row][rand_col] 
+        
+        for num in arrayb[rand_row][rand_col]:
+           
+            print("trying ", num, " in location ", (rand_row, rand_col))
+
+            arrayb[rand_row][rand_col] = num
+            print("PRINTING NUM ")
+            print(arrayb[rand_row][rand_col])
+            #zeros[rand_row][rand_col] = num
+        
+            solve_attempt = copy.deepcopy(arrayb)
+            solve_zeros = copy.deepcopy(zeros)
+            
+            
+        
+                        # fill_withsolve(arrayb, zeros)
+        
+            if fill_withsolve(solve_attempt, solve_zeros) == True:
+                    # If I can solve with my current random choice num, 
+                trycount += 1 
+                
+                
+                
+                print("....................................................")
+                print("FOUND ONE SOLUTION SHOULD TRY NEXT NUMtrycount is ", trycount)
+                print("....................................................")
+                print("....................................................")
+                print("....................................................")
+            
+            elif fill_withsolve(solve_attempt, solve_zeros) == False: 
+                print("------------------------------------------")
+                print("NOT VALID , dont count as trycount")
+                print("------------------------------------------")
+                trycount -= 1
+                arrayb[rand_row][rand_col] = rand_backup
+                #zeros[rand_row][rand_col] = 0
+        if trycount > 2:
+            break
+            
+    
+    #try all nums before getting full count. If greater than 1, more than 1 solution.                
+    
+                        # break out of for num, continue removing other positions.                        
+    return trycount      
                     
                   
                         
