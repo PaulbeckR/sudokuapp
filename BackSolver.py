@@ -253,7 +253,7 @@ def runthrough3(rungrid):
         # print("------------------------------------------")
         
         update_changes, gridx = update_array(gridx)
-        print("newly changed from final update_array", update_changes)
+        
         basic = update_changes + basic
         
         total_changes = (changes + count + removed + xwingcount)
