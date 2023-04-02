@@ -19,7 +19,7 @@ pygame.display.list_modes()
 
 difficulty = 0
 
-new_game = None
+game = None
 solved_bored = None
 
 difficulty = 0
@@ -32,8 +32,8 @@ def set_difficulty_level(selected: tuple, value: any):
 
 def show_start_screen():
         mainmenu = pygame_menu.Menu("Sudoku Time!!", 800,800,
-                                theme= pygame_menu.themes.THEME_SOLARIZED)
-        mainmenu.add.text_input("Name: ", default = 'username', maxchar = 20)
+                                theme= pygame_menu.themes.THEME_BLUE)
+        #mainmenu.add.text_input("Name: ", default = 'username', maxchar = 20)
         mainmenu.add.button('Play', play_game)
 
         mainmenu.add.selector('Difficulty:', [('Easy', 0),('Medium',1), ('Hard', 2)], onchange= set_difficulty_level)
@@ -44,8 +44,10 @@ def show_start_screen():
         
         
 def loading_screen():
-    font = pygame.font.Font(None, 36)
-    text = font.render("Loading...", True, (255, 255, 255))
+    background_color2 = (100, 25, 150)
+    screen.fill(background_color2)
+    font = pygame.font.Font(None, 75)
+    text = font.render("Loading...", True, (255,255,255))
     text_rect = text.get_rect(center=(screen_width // 2, screen_height // 2))
     screen.blit(text, text_rect)
     pygame.display.flip()
@@ -53,18 +55,18 @@ def loading_screen():
 def load_new_game_data():
     global difficulty
     level = difficulty
-    new_game, solved_bored = new_sudoku_board(level)
-    return new_game, solved_bored
+    game, solved_bored = new_sudoku_board(level)
+    return game, solved_bored
 
 
 def load_game_data_thread():
-    global new_game, solved_bored
-    new_game, solved_bored = load_new_game_data()
+    global game, solved_bored
+    game, solved_bored = load_new_game_data()
     
 
     
 def play_game():
-    global new_game, solved_bored
+    global game, solved_bored
     global difficulty
     # Load game data in a separate thread
     load_thread = threading.Thread(target=load_game_data_thread)
@@ -77,22 +79,24 @@ def play_game():
    
 
     # Run game loop
-    start_game_loop(new_game, solved_bored)
+    start_game_loop(game, solved_bored)
     
     
       
 def start_game_loop(new_game, solved_bored):
-    running = True
-   
+    
+    mygame = copy.deepcopy(new_game)
+
+    
     print("New GAME")
-    print_grid(new_game)
+    print_grid(mygame)
     print("                       ")
     print("SOLUTION")
     print_grid(solved_bored)
 
-    current_game = new_game
+    current_game = mygame
 
-    background_color = (50,245,243)
+
     objects = []
 
     black = (0,0,0)
@@ -115,7 +119,8 @@ def start_game_loop(new_game, solved_bored):
 
     notes_mode = False
     notes_board = [[0 for _ in range(9)] for _ in range(9)]
-    arr_board = [[0 for _ in range(9)] for _ in range(9)]
+    array_board2 = [[0 for _ in range(9)] for _ in range(9)]
+    
 
     def cord(pos):
         global x 
@@ -129,20 +134,20 @@ def start_game_loop(new_game, solved_bored):
 
     def draw_box():
         for i in range(2):
-            pygame.draw.line(screen, (200, 0, 70), (x * diff, (y + i)*diff), (x * diff + diff , (y + i)*diff), 5)
-            pygame.draw.line(screen, (200, 0,70), ( (x + i)* diff, y * diff ), ((x + i) * diff, y * diff + diff), 5)
+            pygame.draw.line(screen, (200, 0, 70), (x * diff, (y + i)*diff), (x * diff + diff , (y + i)*diff), 3)
+            pygame.draw.line(screen, (200, 0,70), ( (x + i)* diff, y * diff ), ((x + i) * diff, y * diff + diff), 3)
 
 # creates the drawn box with gridlines.     
     def draw():
 
         for j in range(9):
             for i in range(9):
-                if new_game[i][j] != 0:
+                if mygame[i][j] != 0:
                     #fills already complete numbers with blue.
                     pygame.draw.rect(screen, (152,245,255), (j * diff, i * diff, diff + 1, diff + 1))
                     
                     #Fills in given numbers and centers them.
-                    text1=font1.render(str(new_game[i][j]),1,black)                
+                    text1=font1.render(str(mygame[i][j]),1,black)                
                     screen.blit(text1, (j*diff + 15, i * diff + 1))
                     
         square = []
@@ -166,8 +171,8 @@ def start_game_loop(new_game, solved_bored):
                 thick = 7
             else:
                 thick = 1
-            pygame.draw.line(screen, black, (0, i *diff), (500, i*diff), thick)
-            pygame.draw.line(screen, black, (i*diff, 0), (i*diff, 500), thick)
+            pygame.draw.line(screen, black, (0, i *diff), (497, i*diff), thick)
+            pygame.draw.line(screen, black, (i*diff, 0), (i*diff, 497), thick)
     
 
 
@@ -184,7 +189,7 @@ def start_game_loop(new_game, solved_bored):
                 else:
                     note_val = numbers[row_pos][col_pos][sq_row*3+ sq_col+1]
                             
-                if (note_val != 0) and (new_game[col_pos][row_pos] == 0):
+                if (note_val != 0) and (mygame[col_pos][row_pos] == 0):
                         
                     x_offset = sq_col * diff // 3 
                     #print("x_offset is ", x_offset)
@@ -204,17 +209,17 @@ def start_game_loop(new_game, solved_bored):
             self.y = y
             self.width = width
             self.height = height
+           
             self.onclickFunction = onclickFunction
             self.onePress = onePress
             self.alreadyPressed = False
 
             self.fillColors = {
-                'normal': '#ffffff',
-                'hover': '#666666',
-                'pressed' :'#333333'
+                'normal': '#87CEFA',
+                'hover': '#483D8B',
+                'pressed' :'#FFFFE0'
             }
-            
-            
+           
             self.buttonSurface = pygame.Surface((self.width, self.height))
             self.buttonRect = pygame.Rect(self.x, self.y, self.width, self.height)
             self.buttonSurf = font4.render(buttonText, True, (20,20,20))
@@ -245,31 +250,47 @@ def start_game_loop(new_game, solved_bored):
 
 
         
-    class Square():
-        def __init__(self):
-            global x
-            global y
-            self.rect = pygame.draw.rect(screen, (152,245,255), (y * diff, x * diff, diff + 1, diff + 1))
-    square = Square()
-
+    def handle_mouse_click(pos):
+        for row in range(9):
+            for col in range(9):
+                rect = pygame.Rect(col * diff, row *diff, diff , diff )
+                if rect.collidepoint(pos):
+                    
+                    return row, col
+                 
     def update_notes2():
-  
-        arr_board = create_arrays(new_game)
         
+        arr_board = create_arrays(mygame)
+        
+       
         for i in range(9):
             for j in range(9):
                 if type(arr_board[i][j]) is not list: arr_board[i][j] = [arr_board[i][j]]
                 
                 if len(arr_board[i][j]) > 1:
-                #if new_game[i][j] == 0:
-                    # print("entering arr ", arr_board[i][j], "in", (i,j))
+                    
+                    
                     for ele in arr_board[i][j]:
                         notes[int(j)][int(i)][int(ele)] = ele
+                        
                         notes2.add(ele)
                         draw_inside_square(notes, (j,i), ele, False)
+                        
+                        
+                        
+                elif len(arr_board[i][j]) == 1:
+                    for num in arr_board[i][j]:
+                        if mygame[i][j] != num:
+                            notes[int(j)][int(i)][int(num)] = num
+                            notes2.add(num)
+                            draw_inside_square(notes, (j,i), num, False)
+        
+        
+                    
+                   
+                        
       
-        print("Notes row 0 is ")
-        print(notes[int(0)])
+      
 
         
     def draw_val(val, notes_mode = False):
@@ -327,6 +348,7 @@ def start_game_loop(new_game, solved_bored):
         return True
 
     def solve(grid, original, i , j):
+        # other solve will need to check if equal to orig board.
         while grid[i][j] != 0:
             if i < 8:
                 i+=1
@@ -362,16 +384,19 @@ def start_game_loop(new_game, solved_bored):
     def instruction():
         text1 = font2.render("PRESS D TO RESET TO DEFAULT, or R to EMPTY", 1, black)
         text2 = font2.render("ENTER VALUES and PRES ENTER to COMPLETE", 1, black)
-        
+        text4 = font2.render("PRESS N to enter NOTES", 1, black)
+        text3 = font2.render("Enter Notes: ", 1, black)
         screen.blit(text1, (20,520))
         screen.blit(text2,(20,540))
+        screen.blit(text4, (20, 580))
+        screen.blit(text3,(20,600))
         
     def result():
         text1 = font1.render("Finished!! GOOD JOB: press R or D", 1, black)
         screen.blit(text1, (20,640))
         
-    
-    customButton = Button(600, 200, 125, 45, 'Update Notes', update_notes2)
+  
+    customButton = Button(600, 200, 125, 45, 'Update Notes', update_notes2, onePress = False)
 
     flag1= 0
     flag2=0
@@ -379,12 +404,14 @@ def start_game_loop(new_game, solved_bored):
     flag4 = 0
     flag5 = 0
     rs=0
-  
+    
     error = 0
-
+    
+    
     pygame.display.set_caption("Sudoku!!!")
     while True:
         screen.fill((255,255,255))
+        
    
         for event in pygame.event.get():
             
@@ -393,12 +420,15 @@ def start_game_loop(new_game, solved_bored):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
                 cord(pos)
-                #flag1 = 1
+                # #flag1 = 1
+                print(pos)
                 if customButton.buttonRect.collidepoint(event.pos):
                     flag4 = 1
+                    
                 
-                elif square.rect.collidepoint(event.pos):
-                    flag1=1
+                if pos[0] < 500 and pos[1] < 500:
+                    y, x = handle_mouse_click(event.pos)
+                    
                 #cell_x, cell_y = event.pos[0] // diff, event.pos[1] // diff
                 
                 
@@ -407,13 +437,15 @@ def start_game_loop(new_game, solved_bored):
             
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_n:
-                #notes_mode = not notes_mode
-                #notes_board = create_notes(new_game)
-                    notes_mode = True
-                    flag3 = 1
-                if event.key == pygame.K_s:
-                    notes_mode = False
-                    flag3 = 0
+                    if notes_mode == False:
+                        notes_mode = True
+                        flag3 = 1
+                    else:
+                        notes_mode = False
+                        flag3 = 0
+                # if event.key == pygame.K_s:
+                #     notes_mode = False
+                #     flag3 = 0
             
                 if event.key == pygame.K_LEFT:
                     if x == 0:
@@ -473,7 +505,7 @@ def start_game_loop(new_game, solved_bored):
                     rs=0
                     error =0
                     flag2=0
-                    new_game = [[0,0,0,0,0,0,0,0,0],
+                    mygame = [[0,0,0,0,0,0,0,0,0],
                                 [0,0,0,0,0,0,0,0,0],
                                 [0,0,0,0,0,0,0,0,0],
                                 [0,0,0,0,0,0,0,0,0],
@@ -486,19 +518,19 @@ def start_game_loop(new_game, solved_bored):
                     rs = 0
                     error = 0
                     flag2 = 0
-                    new_game = current_game
+                    mygame = current_game
                     notes = reset_notes
             if flag3 ==1:
-            #draw_val(val, notes_mode = True)
+           
              
-                text3 = font2.render("Note mode is ON",1, black)
-                screen.blit(text3, (20,560))
+                text3 = font2.render("ON",1, (127,255,0))
+                screen.blit(text3, (145,600))
             else:
-                text4 = font2.render("Note mode if OFF ",1,black)
-                screen.blit(text4, (20,580))
+                text4 = font2.render(" OFF ",1, (255,0,0))
+                screen.blit(text4, (140,600))
         
             if flag2== 1:
-                if solve(new_game,solved_bored,0,0) == False:
+                if solve(mygame,solved_bored,0,0) == False:
                     error = 1
                 else:
                     rs = 1
@@ -509,46 +541,37 @@ def start_game_loop(new_game, solved_bored):
             if notes_mode == False:
                 if val != 0:
                     draw_val(val, notes_mode = False)
-                    if valid(new_game, int(y), int(x), val, False) == True:
-                        new_game[int(y)][int(x)] = val
-                        print_grid(new_game)
-                    
-                    
+                    if valid(mygame, int(y), int(x), val, False) == True:
+                        mygame[int(y)][int(x)] = val
+                        
                         notes_board[int(x)][int(y)] = [0]
                         flag1 = 0
                     else:
-                        new_game[int(y)][int(x)] = 0
-                    #notes_board[int(x)][int(y)] = notes_board[int(x)][int(y)]
+                        mygame[int(y)][int(x)] = 0
+                    
                         raise_error2()
                     val = 0
             if notes_mode == True:
-  
-                # print("trying", (x,y))
-                # print("Notes in while ", notes[x][y], "trying", (x,y))
-            
+
                 if val not in notes[int(x)][int(y)]:
                    # print("bef for position" ,(x,y), notes[int(x)][int(y)])
                     # print("val is", val)
-                    notes2.add(val)
-                
-                
-                
+                    # notes2.add(val)
+    
                     notes[int(x)][int(y)][int(val)] = val
-                    notes_board[int(x)][int(y)] = notes2
+                    # notes_board[int(x)][int(y)] = notes2
 
                     draw_val(val, notes_mode = True)
-                
-                
-                   
+          
                 else:
                     notes[int(x)][int(y)][int(val)] = 0
-                    if val in notes2:
-                        notes2.remove(val)
+                    # if val in notes2:
+                    #     notes2.remove(val)
                     draw_val(val, notes_mode = True)
                 
-                    notes_board[int(x)][int(y)] = notes2
-            notes2.clear()
-    
+                #     notes_board[int(x)][int(y)] = notes2
+                # notes2.clear()
+                val = 0    
             for object in objects:
                 object.process()
    
