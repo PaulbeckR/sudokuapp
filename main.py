@@ -14,6 +14,7 @@ import pygame
 
 from BuildPuzzle import *
 from PreparePuzzle import*
+from BackSolver import*
 # from pygame.locals import *
 
 pygame.init()
@@ -23,29 +24,53 @@ pygame.font.init()
 pygame.display.list_modes()
 
 
-complete_board = create_grid_fill()
 
-#previous: 
-#new_grid = create_grid_fill()
+new_game, solved_bored = new_sudoku_board()
+print_grid(new_game)
 
-#print_grid(new_grid)
+print(".........OG board............")
+print_grid(solved_bored)
 
-#print(new_grid)
-
-# prepare puzzle
-new_game = new_game_board(complete_board)
 current_game = new_game
+
 
 background_color = (50,245,243)
 
 black = (0,0,0)
 x = 0
 y = 0
-diff = 500/9
+diff = 55
 val=0
+cell_size = diff/9
 
 font1 = pygame.font.SysFont("comicsans", 40)
 font2 = pygame.font.SysFont("comicsans", 20)
+font3 = pygame.font.SysFont("comicsans", 10)
+notes = [[[0] * 10 for _ in range(9)] for _ in range(9)]
+
+#nums = [1,2,3,4,5,6,7,8,9]
+# def create_notes():
+#     nums = [1,2,3,4,5,6,7,8,9]
+#     grid = [[0 for _ in range(9)] for _ in range(9)]
+#     notes_list = []
+#     for i in range(9):
+#         for j in range(9):
+#             if new_game[i][j] == 0: 
+#                 grid[i][j] = nums
+#             elif new_game[i][j] != 0:
+#                 grid[i][j] = [new_game[i][j]] 
+                
+#     return grid
+
+# candidates_edit = create_notes()
+            
+notes2 = set()
+    
+
+notes_dict = {}
+notes_mode = False
+notes_board = [(0 for _ in range(9)] for _ in range(9)]
+#print(notes_board)
 
 # Functions to highlight a cell. cord(pos) gets the coordinates of a given pos(i,j) and sets it to xy 
 
@@ -76,6 +101,36 @@ def draw():
                 text1=font1.render(str(new_game[i][j]),1,black)                
                 screen.blit(text1, (j*diff + 15, i * diff + 1))
                 
+            # elif len(new_game[i][j]) > 1: 
+            #     for i in range(3):
+            #         for j in range(3):
+                        
+            #else:
+            #if notes_mode:    #new_game[i][j] = notes[x][y]
+    for k in range(9):
+        for l in range(9):
+            #
+    #        # if len(current_game[k][l]) > 1:
+            if new_game[l][k] == 0:
+                #if ( x == k) and( y == l):
+                    
+                for m in range(3):
+                    for n in range(3):
+                #print(i,j)
+                        note_val = notes[int(k)][int(l)][m*3+n+1]
+                            #for note_val in new_game[i][j]:
+                        #print("note val", note_val)
+                        if note_val != 0:
+                    
+                            x_offset = n * diff // 3 
+                            y_offset = m * diff // 3 
+                            text = font3.render(str(note_val),1, black)
+                            screen.blit(text, (k*diff+x_offset+5, l*diff+y_offset+4))
+
+
+                        
+                
+                
     for i in range(10):
         if i % 3 == 0:
             thick = 7
@@ -84,9 +139,45 @@ def draw():
         pygame.draw.line(screen, black, (0, i *diff), (500, i*diff), thick)
         pygame.draw.line(screen, black, (i*diff, 0), (i*diff, 500), thick)
         
-def draw_val(val):
-    text1=font1.render(str(val), 1, black)
-    screen.blit(text1, (x *diff +15, y*diff + 15))
+def erase_note():
+    notes[x][y][val] = None
+    
+    
+
+        
+def draw_val(val, notes_mode = False):
+   
+    if notes_mode: 
+        
+        
+        # note_val = []
+        # if val in notes[int(y)][int(x)][int(val)]:
+        #     for n in notes[int(y)][int(x)][int(val)]
+        #notes[int(x)][int(y)][int(val)] = not notes[int(x)][int(y)][int(val)]
+       # print("notes at draw val", notes[int(x)][int(y)][int(val)])
+        
+       
+        for i in range(3):
+            for j in range(3):
+                #print(i,j)
+                note_val = notes[int(i)][int(j)][i*3+j+1]
+                #print("note val", note_val)
+                if note_val != 0:
+                    
+                    x_offset = i * diff // 3 
+                    y_offset = j * diff // 3 
+                    text = font3.render(str(note_val),1, black)
+                    screen.blit(text, (i*diff+x_offset+5, j*diff+y_offset+4))
+        
+                    
+        
+                    
+    else:
+        
+        val = int(val)
+        text1=font1.render(str(val), 1, black)
+        screen.blit(text1, (x *diff +15, y*diff + 15))
+        
     
 def raise_error1():
     text1 = font1.render("Wrong!!", 1, black)
@@ -96,18 +187,26 @@ def raise_error2():
     text1 = font1.render("Wrong, not a valid key", 1, black)
     screen.blit(text1, (20,570))
     
-def valid(m,i,j,val):
-    for it in range(9):
-        if m[i][it] == val:
-            return False
-        if m[it][j] == val:
-            return False
-    it = i//3
-    jt = j//3
+def valid(grid,row,col,val, notes_mode = False):
     
-    for i in range(it *3, it *3 +3):
-        for j in range(jt *3, jt*3 +3):
-            if m[i][j] == val:
+
+    for i in range(9):
+        if grid[row][i] == val:
+            if notes_mode:
+                print(f"Note: {val} already exists in row {row}")
+            return False
+        if grid[i][col] == val:
+            if notes_mode:
+                print(f"Note: {val} already exists in column {col}")
+            return False
+    box_row = (row//3) *3 
+    box_col = (col//3) *3 
+    
+    for i in range(3):
+        for j in range(3):
+            if grid[box_row+i][box_col+j] == val:
+                if notes_mode: 
+                    print(f"Note: {val} already exists in the box {box_row//3, box_col//3}")
                 return False
     return True
 
@@ -147,10 +246,10 @@ def solve(grid, i , j):
 
 
 
-
 def instruction():
     text1 = font2.render("PRESS D TO RESET TO DEFAULT, or R to EMPTY", 1, black)
     text2 = font2.render("ENTER VALUES and PRES ENTER to VISUALIZE", 1, black)
+    
     screen.blit(text1, (20,520))
     screen.blit(text2,(20,540))
     
@@ -165,6 +264,7 @@ def result():
    
 flag1= 0
 flag2=0
+flag3 = 0
 rs=0
   
 error = 0
@@ -180,20 +280,42 @@ while True:
             pos = pygame.mouse.get_pos()
             cord(pos)
         if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_n:
+                #notes_mode = not notes_mode
+                #notes_board = create_notes(new_game)
+                notes_mode = True
+                flag3 = 1
+            elif event.key == pygame.K_s:
+                notes_mode = False
+                flag3 = 0
+            
+            # else:
+            #     event.unicode.isnumeric() and int(event.unicode) in range(1,10)
+            #     val = int(event.unicode)
+            #     draw_val(val, notes_mode)
+            #     pygame.display.update()
+
+            
                
             if event.key == pygame.K_LEFT:
                 x-=1
+                notes2.clear()
                 flag1=1
             if event.key == pygame.K_RIGHT:
                 x+=1
+                notes2.clear()
                 flag1=1
             if event.key == pygame.K_UP:
                 y-=1
+                notes2.clear()
                 flag1=1
             if event.key == pygame.K_DOWN:
                 y+= 1
+                notes2.clear()
                 flag1=1
+            
             if event.key == pygame.K_1:
+                
                 val =1
             if event.key == pygame.K_2:
                 val = 2
@@ -232,21 +354,73 @@ while True:
                 error = 0
                 flag2 = 0
                 new_game = current_game
+        if flag3 ==1:
+            #draw_val(val, notes_mode = True)
+             
+            text3 = font2.render("Note mode is ON",1, black)
+            screen.blit(text3, (20,560))
+        else:
+            text4 = font2.render("Note mode if OFF ",1,black)
+            screen.blit(text4, (20,580))
+        
         if flag2== 1:
             if solve(new_game,0,0) == False:
                 error = 1
             else:
                 rs = 1
                 flag2 = 0
-        if val!= 0:
-            draw_val(val)
-            if valid(new_game,int(x), int(y), val) == True:
-                new_game[int(x)][int(y)] = val
-                flag1 = 0
+        
+        
+        if notes_mode == False:
+            if val != 0:
+                draw_val(val, notes_mode = False)
+                if valid(new_game, int(y), int(x), val, False) == True:
+                    new_game[int(y)][int(x)] = val
+                    notes_board[int(x)][int(y)] = [0]
+                    flag1 = 0
+                else:
+                    new_game[int(y)][int(x)] = 0
+                    notes_board[int(x)][int(y)] = notes_board[int(x)][int(y)]
+                    raise_error2()
+                val = 0
+        if notes_mode == True:
+            
+            if val not in notes[int(x)][int(y)]:
+                print("bef for position" , notes[int(x)][int(y)])
+                print("val is", val)
+                notes2.add(val)
+                
+                
+                notes[int(x)][int(y)][int(val)] = val
+                notes_board[int(x)][int(y)] = notes2
+                
+                print("notes for position" , notes[int(x)][int(y)])
+                print("notes board", notes_board[x][y])
+                draw_val(val, notes_mode = True)
+                
+                
+                   
             else:
-                new_game[int(x)][int(y)] = 0
-                raise_error2()
-            val = 0
+                notes[int(x)][int(y)][int(val)] = 0
+                if val in notes2:
+                    notes2.discard(val)
+                draw_val(val, notes_mode = True)
+                
+                notes_board[int(x)][int(y)] = notes2
+                
+            
+            
+            
+                    
+                    
+          
+            
+            
+            
+            
+
+
+                    
         if error == 1:
             raise_error1()
         if rs==1:
@@ -254,6 +428,7 @@ while True:
         draw()
         if flag1==1:
             draw_box()
+        
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()

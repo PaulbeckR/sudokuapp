@@ -1,127 +1,92 @@
-from main import*
+import pygame
 
+initialize pygame
 
-def check_correct(new_game, complete_board):
+pygame.init()
+
+# set window size and title
+WINDOW_SIZE = (540, 600)
+WINDOW_TITLE = 'Sudoku Board'
+screen = pygame.display.set_mode(WINDOW_SIZE)
+pygame.display.set_caption(WINDOW_TITLE)
+
+# define colors
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+GRAY = (200, 200, 200)
+
+# set font
+FONT_SIZE = 50
+font = pygame.font.Font(None, FONT_SIZE)
+
+# define grid size and spacing
+GRID_SIZE = 60
+GRID_SPACING = 5
+
+# create empty Sudoku board
+board = []
+for i in range(9):
+    row = []
+    for j in range(9):
+        row.append(0)
+    board.append(row)
+
+# set initial cursor position
+cursor_pos = (0, 0)
+
+# set initial mode to 'solution'
+mode = 'solution'
+
+# define function to draw Sudoku board
+def draw_board():
+    # draw background
+    screen.fill(WHITE)
+    
+    # draw grid lines
+    for i in range(10):
+        if i % 3 == 0:
+            thickness = 4
+        else:
+            thickness = 1
+        pygame.draw.line(screen, BLACK, (GRID_SPACING, i * GRID_SIZE + GRID_SPACING), 
+                         (9 * GRID_SIZE + GRID_SPACING, i * GRID_SIZE + GRID_SPACING), thickness)
+        pygame.draw.line(screen, BLACK, (i * GRID_SIZE + GRID_SPACING, GRID_SPACING), 
+                         (i * GRID_SIZE + GRID_SPACING, 9 * GRID_SIZE + GRID_SPACING), thickness)
+    
+    # draw numbers
     for i in range(9):
         for j in range(9):
-            if new_game[i][j] == complete_board[i][j]:
-                return True
-            
-            return "Game is not correct"    
-        
-The loop thats keep the window running
-while run:
+            if board[i][j] != 0:
+                number = font.render(str(board[i][j]), True, BLACK)
+                screen.blit(number, (j * GRID_SIZE + GRID_SPACING + FONT_SIZE / 3, 
+                                     i * GRID_SIZE + GRID_SPACING))
+                
+    # draw cursor
+    pygame.draw.rect(screen, BLACK, (cursor_pos[1] * GRID_SIZE + GRID_SPACING, 
+                                     cursor_pos[0] * GRID_SIZE + GRID_SPACING, 
+                                     GRID_SIZE, GRID_SIZE), 3)
+    
+    # draw mode indicator
+    if mode == 'solution':
+        mode_text = font.render('SOLUTION MODE', True, BLACK)
+    else:
+        mode_text = font.render('CANDIDATE MODE', True, BLACK)
+    screen.blit(mode_text, (GRID_SPACING, 550))
 
-      # White color background
-        screen.fill((255, 255, 255))
-      # Loop through the events stored in event.get()
-        for event in pygame.event.get():
-            # Quit the game window
-             if event.type == pygame.QUIT:
-                  run = False
-           # Get the mouse position to insert number
-             if event.type == pygame.MOUSEBUTTONDOWN:
-                 flag1 = 1
-                 pos = pygame.mouse.get_pos()
-                 get_cord(pos)
-                 
-           # Get the number to be inserted if key pressed
-              if event.type == pygame.KEYDOWN:
-                     if event.key == pygame.K_LEFT:
-                             x-= 1
-                             flag1 = 1
-                    if event.key == pygame.K_RIGHT:
-                            x+= 1
-                            flag1 = 1
-                    if event.key == pygame.K_UP:
-                            y-= 1
-                            flag1 = 1
-                    if event.key == pygame.K_DOWN:
-                            y+= 1
-                            flag1 = 1
-                    if event.key == pygame.K_1:
-                            val = 1
-                    if event.key == pygame.K_2:
-                             val = 2
-                    if event.key == pygame.K_3:
-                             val = 3
-                    if event.key == pygame.K_4:
-                             val = 4
-                    if event.key == pygame.K_5:
-                             val = 5
-                    if event.key == pygame.K_6:
-                             val = 6
-                    if event.key == pygame.K_7:
-                             val = 7
-                    if event.key == pygame.K_8:
-                             val = 8
-                    if event.key == pygame.K_9:
-                             val = 9
-                    if event.key == pygame.K_RETURN:
-                             flag2 = 1
-                    # If R pressed clear the sudoku board
-                    if event.key == pygame.K_r:
-                             rs = 0
-                            error = 0
-                            flag2 = 0
-                            grid =[
-                            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-                            [0, 0, 0, 0, 0, 0, 0, 0, 0]
-                            ]
-                   # If D is pressed reset the board to default
-                   if event.key == pygame.K_d:
-                            rs = 0
-                            error = 0
-                            flag2 = 0
-                            grid =[
-                            [7, 8, 0, 4, 0, 0, 1, 2, 0],
-                            [6, 0, 0, 0, 7, 5, 0, 0, 9],
-                            [0, 0, 0, 6, 0, 1, 0, 7, 8],
-                            [0, 0, 7, 0, 4, 0, 2, 6, 0],
-                            [0, 0, 1, 0, 5, 0, 9, 3, 0],
-                            [9, 0, 4, 0, 6, 0, 0, 0, 5],
-                            [0, 7, 0, 3, 0, 0, 0, 1, 2],
-                            [1, 2, 0, 0, 0, 7, 4, 0, 0],
-                            [0, 4, 9, 2, 0, 6, 0, 0, 7]
-                            ]
-             if flag2 == 1:
-                  if solve(grid, 0, 0)== False:
-                           error = 1
-                  else:
-                           rs = 1
-                           flag2 = 0
-             if val != 0: 
-                  draw_val(val)
-                  # print(x)
-                  # print(y)
-                  if valid(grid, int(x), int(y), val)== True:
-                           grid[int(x)][int(y)]= val
-                           flag1 = 0
-                  else:
-                           grid[int(x)][int(y)]= 0
-                           raise_error2()
-                  val = 0
+# draw initial board
+draw_board()
 
-            if error == 1:
-                    raise_error1()
-            if rs == 1:
-                    result()
-            draw()
-            if flag1 == 1:
-                    draw_box()
-            instruction()
-
-
-            # Update window
-            pygame.display.update()
-
-
-# Quit pygame window
-pygame.quit()
+# main loop
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
+                cursor_pos = (max(cursor_pos[0] - 1, 0), cursor_pos[1])
+            elif event.key == pygame.K_DOWN:
+                cursor_pos = (min(cursor_pos[0] + 1, 8), cursor_pos[1])
+            elif event.key == pygame.K_LEFT:
+                cursor_pos = (cursor_pos[0], max(cursor_pos[1] - 1, 0))
+            elif event
