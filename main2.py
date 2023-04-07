@@ -12,7 +12,7 @@ from BackSolver import*
 pygame.init()
 screen_width = 800
 screen_height = 800
-screen = pygame.display.set_mode((800,800))
+screen = pygame.display.set_mode((screen_height, screen_width))
 pygame.font.init()
 
 pygame.display.list_modes()
@@ -31,7 +31,7 @@ def set_difficulty_level(selected: tuple, value: any):
     
 
 def show_start_screen():
-        mainmenu = pygame_menu.Menu("Sudoku Time!!", 800,800,
+        mainmenu = pygame_menu.Menu("Sudoku Time!!", screen_height, screen_width,
                                 theme= pygame_menu.themes.THEME_BLUE)
         #mainmenu.add.text_input("Name: ", default = 'username', maxchar = 20)
         mainmenu.add.button('Play', play_game)
@@ -41,6 +41,30 @@ def show_start_screen():
         mainmenu.add.button('Quit', pygame_menu.events.EXIT)
 
         mainmenu.mainloop(screen)
+
+def show_game_over_screen():
+    background_color2 = (100, 25, 100)
+    screen.fill(background_color2)
+    font = pygame.font.Font(None, 75)
+    text = font.render("Game Over", True, (255,255,255))
+    text1= font.render("Want to play again?",True, (225,225,225))
+    text_rect = text.get_rect(center=(screen_width // 2, screen_height // 2))
+    text1_rect = text1.get_rect(center=(screen_width // 2, screen_height-100 // 2))
+
+    screen.blit(text, text_rect)
+    screen.blit(text1, text1_rect)
+    pygame.display.update()
+    
+    mouse = pygame.mouse.get_pos()
+    if text_rect.collidepoint(mouse):
+        pygame.quit()
+    if text1_rect.collidepoint(mouse):
+        show_start_screen()
+        
+    
+    
+    
+     
         
         
 def loading_screen():
@@ -50,7 +74,7 @@ def loading_screen():
     text = font.render("Loading...", True, (255,255,255))
     text_rect = text.get_rect(center=(screen_width // 2, screen_height // 2))
     screen.blit(text, text_rect)
-    pygame.display.flip()
+    pygame.display.update()
 
 def load_new_game_data():
     global difficulty
@@ -86,7 +110,8 @@ def play_game():
 def start_game_loop(new_game, solved_bored):
     
     mygame = copy.deepcopy(new_game)
-
+    colorsgrid = copy.deepcopy(new_game)
+    running = True
     
     print("New GAME")
     print_grid(mygame)
@@ -100,6 +125,10 @@ def start_game_loop(new_game, solved_bored):
     objects = []
 
     black = (0,0,0)
+    preset_board_color = (125,216,230)
+    user_color = (175,112,211)
+    preset_font_color = (0,0,0)
+    user_font_color = (255,255,255)
     x = 0
     y = 0
     diff = 55
@@ -122,6 +151,22 @@ def start_game_loop(new_game, solved_bored):
     array_board2 = [[0 for _ in range(9)] for _ in range(9)]
     
 
+    def board_colors_preset(grid):
+        board_colors = []
+        for row in grid:
+            new_row = []
+            for cell in row:
+                if cell != 0:
+                    new_row.append((cell,True))
+                else:
+                    new_row.append((cell,False))
+            board_colors.append(new_row)
+        return board_colors
+    
+    
+    thisboard = board_colors_preset(colorsgrid)                            
+    
+
     def cord(pos):
         global x 
         if pos[0] < 500:
@@ -142,15 +187,19 @@ def start_game_loop(new_game, solved_bored):
 
         for j in range(9):
             for i in range(9):
+                
+                color = preset_board_color if thisboard[i][j][1] else user_color
+                font_color = preset_font_color if thisboard[i][j][1] else user_font_color
+                
                 if mygame[i][j] != 0:
                     #fills already complete numbers with blue.
-                    pygame.draw.rect(screen, (152,245,255), (j * diff, i * diff, diff + 1, diff + 1))
+                    pygame.draw.rect(screen, color, (j * diff, i * diff, diff + 1, diff + 1))
                     
                     #Fills in given numbers and centers them.
-                    text1=font1.render(str(mygame[i][j]),1,black)                
+                    text1=font1.render(str(mygame[i][j]),1,font_color)                
                     screen.blit(text1, (j*diff + 15, i * diff + 1))
-                    
-        square = []
+
+
         for k in range(9):
             for l in range(9):
                 draw_inside_square(notes, (k,l), 0, False)
@@ -171,8 +220,8 @@ def start_game_loop(new_game, solved_bored):
                 thick = 7
             else:
                 thick = 1
-            pygame.draw.line(screen, black, (0, i *diff), (497, i*diff), thick)
-            pygame.draw.line(screen, black, (i*diff, 0), (i*diff, 497), thick)
+            pygame.draw.line(screen, black, (0, i *diff), (game_height - 3, i*diff), thick)
+            pygame.draw.line(screen, black, (i*diff, 0), (i*diff, game_width - 3), thick)
     
 
 
@@ -255,6 +304,7 @@ def start_game_loop(new_game, solved_bored):
             for col in range(9):
                 rect = pygame.Rect(col * diff, row *diff, diff , diff )
                 if rect.collidepoint(pos):
+                    draw_box()
                     
                     return row, col
                  
@@ -392,8 +442,9 @@ def start_game_loop(new_game, solved_bored):
         screen.blit(text3,(20,600))
         
     def result():
-        text1 = font1.render("Finished!! GOOD JOB: press R or D", 1, black)
-        screen.blit(text1, (20,640))
+        
+        show_game_over_screen()
+        
         
   
     customButton = Button(600, 200, 125, 45, 'Update Notes', update_notes2, onePress = False)
@@ -409,8 +460,9 @@ def start_game_loop(new_game, solved_bored):
     
     
     pygame.display.set_caption("Sudoku!!!")
-    while True:
+    while running:
         screen.fill((255,255,255))
+        draw_box()
         
    
         for event in pygame.event.get():
@@ -428,6 +480,7 @@ def start_game_loop(new_game, solved_bored):
                 
                 if pos[0] < 500 and pos[1] < 500:
                     y, x = handle_mouse_click(event.pos)
+                    
                     
                 #cell_x, cell_y = event.pos[0] // diff, event.pos[1] // diff
                 
@@ -478,26 +531,25 @@ def start_game_loop(new_game, solved_bored):
                     notes2.clear()
                     flag1=1
             
-                if event.key == pygame.K_1:
-                
+                if event.key == pygame.K_1 or event.key == pygame.K_KP1:
                     val =1
-                if event.key == pygame.K_2:
+                if event.key == pygame.K_2 or event.key == pygame.K_KP2:
                     val = 2
-                if event.key == pygame.K_3:
+                if event.key == pygame.K_3 or event.key == pygame.K_KP3:
                     val = 3
-                if event.key == pygame.K_4:
+                if event.key == pygame.K_4 or event.key == pygame.K_KP4:
                     val = 4
-                if event.key == pygame.K_5:
+                if event.key == pygame.K_5 or event.key == pygame.K_KP5:
                     val = 5
-                if event.key == pygame.K_6:
+                if event.key == pygame.K_6 or event.key == pygame.K_KP6:
                     val = 6
-                if event.key == pygame.K_7:
+                if event.key == pygame.K_7 or event.key == pygame.K_KP7:
                     val = 7
-                if event.key == pygame.K_8:
+                if event.key == pygame.K_8 or event.key == pygame.K_KP8:
                     val = 8
-                if event.key == pygame.K_9:
+                if event.key == pygame.K_9 or event.key == pygame.K_KP9:
                     val = 9
-                if event.key == pygame.K_RETURN:
+                if event.key == pygame.K_RETURN or event.key == pygame.K_KP_EQUALS:
                     flag2 = 1
                 
                 
@@ -520,6 +572,10 @@ def start_game_loop(new_game, solved_bored):
                     flag2 = 0
                     mygame = current_game
                     notes = reset_notes
+                    
+            if flag1==1:
+                if (-1 < x < 9) and ( -1 < y < 9):
+                    draw_box()
             if flag3 ==1:
            
              
@@ -530,9 +586,13 @@ def start_game_loop(new_game, solved_bored):
                 screen.blit(text4, (140,600))
         
             if flag2== 1:
-                if solve(mygame,solved_bored,0,0) == False:
+                # if solve(mygame,solved_bored,0,0) == False:
+                #     error = 1
+                    
+                if test_if_equal(mygame, solved_bored) == False:
                     error = 1
                 else:
+                    #print("test if equal true")
                     rs = 1
                     flag2 = 0
 
@@ -580,11 +640,12 @@ def start_game_loop(new_game, solved_bored):
             if error == 1:
                 raise_error1()
             if rs==1:
+                running = False
                 result()
             draw()
-            if flag1==1:
-                if (-1 < x < 9) and ( -1 < y < 9):
-                    draw_box()
+            # if flag1==1:
+            #     if (-1 < x < 9) and ( -1 < y < 9):
+            #         draw_box()
         
             if event.type == pygame.QUIT:
                 
@@ -594,7 +655,7 @@ def start_game_loop(new_game, solved_bored):
             pygame.display.update()
 
 show_start_screen()
-    
+
 
                 
                  

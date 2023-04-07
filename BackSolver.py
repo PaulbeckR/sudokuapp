@@ -39,93 +39,6 @@ Board Loop - primary method calling fill/unique methods. Maintains loop until un
 
 '''
 
-
-
-
-
-evil_sudoku = [[0,9,3,0,0,4,5,6,0],
-               [0,6,0,0,0,3,1,4,0],
-               [0,0,4,6,0,8,3,0,9],
-               [9,8,1,3,4,5,0,0,0],
-               [3,4,7,2,8,6,9,5,1],
-               [6,5,2,0,7,0,4,8,3],
-               [4,0,6,0,0,2,8,9,0],
-               [0,0,0,4,0,0,0,1,0],
-               [0,2,9,8,0,0,0,3,4]]
-
-evil_sudoku2 = [[0,9,3,0,0,0,5,6,0],
-               [0,6,0,0,0,3,1,4,0],
-               [0,0,4,6,0,8,3,0,9],
-               [9,8,1,3,4,5,0,0,0],
-               [3,4,7,2,8,6,9,5,1],
-               [6,5,2,0,7,0,4,8,3],
-               [4,0,0,0,0,2,8,9,0],
-               [0,0,0,4,0,0,0,1,0],
-               [0,2,9,8,0,0,0,3,4]]
-
-evil_orig = [[2,9,3,7,1,4,5,6,8],
-               [7,6,8,5,9,3,1,4,2],
-               [5,1,4,6,2,8,3,7,9],
-               [9,8,1,3,4,5,7,2,6],
-               [3,4,7,2,8,6,9,5,1],
-               [6,5,2,9,7,1,4,8,3],
-               [4,7,6,1,3,2,8,9,5],
-               [8,3,5,4,6,9,2,1,7],
-               [1,2,9,8,5,7,6,3,4]]
-evil_sudoku_zero = [[0,9,3,0,0,4,5,6,0],
-               [0,6,0,0,0,3,1,4,0],
-               [0,0,4,6,0,8,3,0,9],
-               [9,8,1,3,4,5,0,0,0],
-               [3,4,7,2,8,6,9,5,1],
-               [6,5,2,0,7,0,4,8,3],
-               [4,0,6,0,0,2,8,9,0],
-               [0,0,0,4,0,0,0,1,0],
-               [0,2,9,8,0,0,0,3,4]]
-
-test_game1 = [[2,0,1,0,3,0,6,0,7],
-               [0,0,6,0,9,0,1,0,8],
-               [0,0,0,0,6,0,0,0,2],
-               [9,1,7,0,5,8,0,2,0],
-               [0,5,0,0,0,0,0,0,0],
-               [0,2,0,0,7,0,8,0,5],
-               [0,6,0,5,0,0,0,0,0],
-               [0,8,4,9,0,2,7,6,0],
-               [0,3,2,6,8,0,5,0,0]]
-
-
-test_oggame1 = [[2,9,1,8,3,5,6,4,7],
-               [3,7,6,2,9,4,1,5,8],
-               [8,4,5,7,6,1,9,3,2],
-               [9,1,7,3,5,8,4,2,6],
-               [4,5,8,1,2,6,3,7,9],
-               [6,2,3,4,7,9,8,1,5],
-               [7,6,9,5,4,3,2,8,1],
-               [5,8,4,9,1,2,7,6,3],
-               [1,3,2,6,8,7,5,9,4]]
-
-test_grid2 = [[0, 6, 2,0, 0, 0, 0, 0, 1],
-[0, 5, 9, 0, 0, 0, 6, 0, 7],
-[8, 1, 7, 0, 0, 5, 2, 0, 0],
-[7, 0, 6, 0, 2, 9, 0, 0, 8],
-[0, 0, 0, 4, 6, 0, 9,0, 0],
-[1, 0, 4, 8, 0, 0,5, 0, 6],
-
-[0, 0, 8,0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 9, 0, 1, 8, 5],
-[5, 0, 0, 0, 0, 0, 0, 0, 0]]
-
-og_grid2 = [[4, 6, 2,9, 7, 3, 8, 5, 1],
-[3, 5, 9, 2, 1, 8, 6, 4, 7],
-[8, 1, 7, 6, 4, 5, 2, 3, 9],
-[7, 3, 6, 5, 2, 9, 4, 1, 8],
-[2, 8, 5, 4, 6, 1, 9,7, 3],
-[1, 9, 4, 8, 3, 7,5, 2, 6],
-
-[9, 7, 8,1, 5, 2, 3, 6, 4],
-[6, 2, 3, 7, 9, 4, 1, 8, 5],
-[5, 4, 1, 3, 8, 6, 7, 9, 2]]
-
-
 def num_frequency(grid):
     num_freq = dict()
     num_list = [1,2,3,4,5,6,7,8,9]
@@ -146,40 +59,6 @@ def num_frequency(grid):
     return False
             
                 
-def add_arrays(game_board):
-
-    possible_nums = []
-    for i in range(9):
-        for j in range(9):
-    
-            value = game_board[i][j]
-            if type(value) is not list:value = [value]
-           
-            if value == [0]:
-                #check row
-                possible_nums = list(range(1, 10))
-                for k in range(9):
-                    if game_board[i][k] in possible_nums:
-                        possible_nums.remove(game_board[i][k])
-                # check COLUMN
-                for k in range(9):
-                    if game_board[k][j] in possible_nums:
-                        possible_nums.remove(game_board[k][j])
-                # check 3x3 space
-                row_start = i - i % 3
-                col_start = j - j % 3
-
-                for x in range(row_start, row_start+3):
-                    for y in range(col_start, col_start+3):
-                        if game_board[x][y] in possible_nums:
-                            possible_nums.remove(game_board[x][y])
-                possible_numbers_grid[i][j] = possible_nums
-            else: 
-                possible_nums = game_board[i][j]
-                # print("after first iter" , possible_nums)
-                possible_numbers_grid[i][j] = possible_nums
-
-    return possible_numbers_grid  
 
 
 
@@ -204,7 +83,7 @@ def runthrough3(rungrid):
     
     total_changes = 1
     
-    intial_solved = solved_square(grid)
+   
     basic = 0
     candidate_lines = 0
     hidden = 0
@@ -212,45 +91,26 @@ def runthrough3(rungrid):
     
     while total_changes != 0:
     #run until 0 changes for all
-        
-       # print(" Basic Solve 2")
+
         grida, changes = basic_solve2(grid)
         basic  = basic + changes
-        #print_pos_grid(grida)
-        
-        
-       # print("BASIC CHANGES " , changes)
-        
-        #print("GRID BEFORE HIDDEN")
-        #print_pos_grid(grida)
-        
-       # print(" Hidden ")
+
         gridb, removed = gen_hidden_loop(grida) 
         
         
         hidden = hidden + removed
-        #print("Hidden Changes " , hidden)
-        
-        "Instead of basic solve, could add array update to remove method in hidden"
-        #gridb2, count2 = basic_solve(gridb)
-        
-        #print(" Candidate lines ")
+    
         gridcl, count = check_lonely_nums(gridb)
         
         candidate_lines = candidate_lines + count
-       # print("Candidate lines Removed", candidate_lines)
+ 
     
         #Already updating arrays within CL
         
         
         gridx, xwingcount = xwing(gridcl)
         xwings = xwingcount + xwings
-       # print("total removed from xwing", xwingcount )
-        #print_pos_grid(gridc)
-        
-        
-        #print("TOTAL CHANGES IN RUNTHROUGH Loop ", total_changes)
-        # print("------------------------------------------")
+
         
         update_changes, gridx = update_array(gridx)
         
@@ -260,16 +120,7 @@ def runthrough3(rungrid):
     
     solved_after_run = solved_square(gridx)
     difficulty_dictionary = {"Basic": basic, "Hidden": hidden, "Candidates": candidate_lines, "Xwing": xwings, "Solved": solved_after_run}
-    #print("diff_dict" , difficulty_dictionary)
-    
-  
-        
- 
-    # print("xwings: ", xwings)
-    # print("(doubs/trips): ", hidden)
-    # print("candidate lines: ", candidate_lines)
-    # print("basic solve: ", basic)
-    # print("initial solved: ", intial_solved)
+   
     
     check = copy.deepcopy(gridx)
     checkas = back_to_board(check)    
@@ -295,7 +146,7 @@ def get_difficulty_level(board):
     elif (mydict["Xwing"] >= 1 ) or (mydict["Hidden"] >=8) or (mydict["Solved"] <= 30):
         level =2
         
-    #global difficulty_level
+ 
     return level
 
 
@@ -305,12 +156,7 @@ def get_difficulty_level2(mydict):
     # hard = 2 
     
     level = 0
-    
-    
-   # print(mydict)
-    
-    
- 
+
     if  (mydict["Basic"] <= 10) and (mydict["Hidden"] >=4) or (mydict["Candidates"] >=4) or (mydict["Solved"] <=75):
         level = 1 
     elif (mydict["Xwing"] >= 1 ) or (mydict["Hidden"] >=8) or (mydict["Candidates"] >=8) or (mydict["Solved"] <= 60):
@@ -389,11 +235,6 @@ def fill_withsolve(gridarry, gridzero):
     return False
 
 
-def clue_count(grid):
-    count = solved_square(grid)
-    if (count > 17) and (count < 40):
-        return True
-    return False
 
 def get_random_num(grid):
     #print("Grid inside get_random")
@@ -430,16 +271,9 @@ glob_difflevel = 9
 ''' Takes filled board and removes one num at a time'''
 def create_unique( orig_board, difficulty): 
     arrayboard = copy.deepcopy(orig_board)
-    
-    
-    
-     
+
     zerosboard = copy.deepcopy(orig_board)
-    # print("START OF CREATE UNIQUE")
-    # print("                                    ")
-    # print("                                    ")
-    # print("                                    ")
-    #print("clue count is ", clue_count(arrayboard))
+
     count = 0
   
     
@@ -463,7 +297,7 @@ def create_unique( orig_board, difficulty):
        
         #print_grid(arrayboard)
             
-        solution_count = try_to_solve2(arrayboard,  orig_board, difficulty)
+        solution_count = try_to_solve2(arrayboard,  orig_board)
         #print(solution_count, "is solution count AFTER TRY TO SOLVE ")
         
        
@@ -497,21 +331,11 @@ def create_unique( orig_board, difficulty):
             print_grid(orig_board)
             #create_unique(orig_board, difficulty)
             continue
-            print(".....................................................")
-            print(".....................................................")
-            print(".....................................................")
-
-        
-        
-        
-        
-        
+  
         if solution_count == True:
             if (comp_sq(zerosboard) < 35):
                # print("FOUND solutiONNnnnnnnnn", comp_sq(zerosboard))
-                #print("FOUND solutiONNnnnnnnnn")
-                #print("FOUND solutiONNnnnnnnnn")
-               # print("FOUND solutiONNnnnnnnnn")
+             
 
                 #level2 = get_difficulty_level(arrayboard)
                 #print("difficulty level is ", level2)
@@ -554,40 +378,7 @@ def create_unique( orig_board, difficulty):
 
     return orig_board, zerosboard
    
-    
-   
-            
-   
-        
-def set_arrays(grid):
-    num_list = [1,2,3,4,5,6,7,8,9]
-    row = 0
-    col = 0
-    for i in range(9):
-        for j in range(9):
-            if isinstance(grid[i][j], int): 
-                if grid[i][j] == 0:
-                    grid[i][j] = num_list
-                    row = i
-                    col = j
-            else:
-                for n in grid[i][j]:
-                #print("looking at ", (i,j), grid[i][j])
-                    if n == 0:
-                        grid[i][j] = num_list
-                        row = i
-                        col = j
-                        print("grid spot is now ", grid[i][j])
-    
-    ucount , grid = update_array(grid)
-    
-    #print("after update array", (row,col), "is", grid[row][col])
-    
-    #print("during set array")
-   # print_pos_grid(grid)
-    
-    return grid  
-
+# Think this is in SCRATCH
 def back_to_board(grid):
     #print("PRINTING GRID IN BACK TO BOARD")
     #print_grid(grid)
@@ -602,34 +393,15 @@ def back_to_board(grid):
     return grid
    
 
-        
+#dupe, not used        
 def try_to_solve (array2, og_board, difficulty):
-    ''' Shoudl just make this a return True/False
-    
-    True : Only one valid solution is found that matches. If any other matches found, false.
-    False: More than one valid solution found (doesn't match Og). OR - no solutions found after reviewing all arrays.
-    
-    
-    
-    '''
-    
-    #arraysadd = add_arrays(array2)
-    #print("running through try_to_solve.....................")
-    
-    
     
    
     arrayrun, diff_dict = runthrough3(array2)
     
     diff_level = get_difficulty_level(diff_dict)
     
-    
-    
-    
-    #print("AFTER FIRST RUN")
-    #print_pos_grid(arrayrun)
-   # print("solved squares after runthrough", solved_square(arrayrun))
-    
+ 
     arrayb = copy.deepcopy(arrayrun)
     zeros = back_to_board(arrayrun)
     
@@ -688,19 +460,7 @@ def try_to_solve (array2, og_board, difficulty):
                         
                         count_loop += 1
                         solve_attempt = copy.deepcopy(trysolve)
-                        #mini_arr_update(solve_attempt, (i,j))
-                        
-                        # fuck = copy.deepcopy(solve_attempt)
-                        # fuck2 = back_to_board(fuck)
-                        # print("After setting TRYNUM, updated arrays")
-                        # if comp_sq(fuck2) == 81:
-                        #     print("after adding num in trysolve, total solved is ", comp_sq(fuck2))
-                        #     if test_if_equal(solve_attempt, og_board) == False:
-                        #         trycount += 1
-                        #         return True
-                      
-                        # print("BEFore fillwithsolve")
-                        # print_pos_grid(solve_attempt)
+                       
                         solve_zeros = copy.deepcopy(zeros)
                         
                         if fill_withsolve(solve_attempt, solve_zeros) == True:
@@ -709,9 +469,6 @@ def try_to_solve (array2, og_board, difficulty):
                             print("fill_withsolve is completed , printing solve_attempt")
                             print_pos_grid(solve_attempt)
 
-                            # print("......................................")
-                            # print("OG board")
-                            # print_grid(og_board)
                             
                             if is_valid_fill(solve_attempt) == True:
                                 valid_count += 1
@@ -793,7 +550,7 @@ def try_to_solve (array2, og_board, difficulty):
     
     
     
-def try_to_solve2 (array2, orig, difficulty):
+def try_to_solve2 (array2, orig):
     ''' Shoudl just make this a return True/False
     
     True : Only one valid solution is found that matches. If any other matches found, false.
@@ -903,20 +660,7 @@ def solve_loop (arrayb, zeros, og_board, solutions, multiple_solutions):
                         count_loop += 1
                         #print_grid(tryzero)
                         if is_valid(tryzero, (i, j), num):
-                            
-                            # trysolve[i][j] = [num]
-                            # mini_arr_update(trysolve, (i,j))
-                            # print("Trysolve looks like:")
-                            # print_pos_grid(trysolve)
-                            
-                            
-                            
-                            
-                            #tryzero[i][j] = num
-                            
-                            
-                            
-                            
+                        
 
                             solve_attempt = copy.deepcopy(trysolve)
                             
@@ -936,31 +680,14 @@ def solve_loop (arrayb, zeros, og_board, solutions, multiple_solutions):
                         
                             if fill_withsolve(solve_attempt, solve_zeros) == True:
                                 
-                                # print("Grid after fill with solve")
-                                # print("ORIGINAL")
-                                # print_grid(og_board)
-                                # print("........................")
-                                # print("Solve_zeros")
-                                # print_grid(solve_zeros)
-                                # print("Completed squares", comp_sq(solve_zeros))
-                                # solved_squares = 0
-                                # if find_array(solve_attempt) == None:
-                                    
-                                #     solve_copy = copy.deepcopy(solve_attempt)
-                                #     test = back_to_board(solve_copy)
+                               
                                 solved_squares = comp_sq(solve_zeros)
                                 if solved_squares != 81:
                                     #board not solved
                                     #print("Board not solved, reset and try next num", (i,j), num)
                                     invalid_boards += 1
                                     continue
-                            
-                                    #print("fill_withsolve is completed , printing solve_attempt")
-                                    #print_pos_grid(solve_attempt)
-                                    #total_filled_boards += 1
-                                    # print("......................................")
-                                    # print("OG board")
-                                    # print_grid(og_board)
+                         
                                 else:
                                     if is_valid_fill(solve_zeros) == True:
                                         valid_boards += 1
@@ -972,11 +699,6 @@ def solve_loop (arrayb, zeros, og_board, solutions, multiple_solutions):
                                         if test_if_equal(solve_zeros, og_board) == False:
                                             key += 1
                                     
-                                            # print("boards did not match", (i,j))
-                                            # print("!!!!!!!!!!!!!!!!!!!!")
-                                            # print("!!!!!!!!!!!!!!!!!!!!")
-                                           # print_grid(og_board)
-                                           
                                                                                       
                                             second_solution[key] = solve_zeros
                                   
@@ -987,11 +709,7 @@ def solve_loop (arrayb, zeros, og_board, solutions, multiple_solutions):
                                            # print("trycount greater or equal than 2, returning count")
                                             return solutions, multiple_solutions
                                         elif test_if_equal(solve_zeros, og_board) == True:
-                                           # print("TEST WAS EQUAL!!!!!!!")
-                                            # print_grid(solve_attempt)
-                                            # print("......................................")
-                                            # print("OG board")
-                                            # print_grid(og_board)
+                                        
                                             #trycount +=1
                                             solutions += 1
                                             #continue
