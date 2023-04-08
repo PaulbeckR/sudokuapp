@@ -35,19 +35,27 @@ def find_empty(grid):
 
 
 def is_valid(grid, pos, num):
+    
     for i in range(9):
+       # print("checking position,", (pos[0], i), "with grid", grid[pos[0]][i])
         if grid[pos[0]][i] == num and pos[1] != i:
+            #print("NOT VALID,", (pos[0], i) ,num)
+            
             return False
 
     for i in range(9):
+       # print("checking position,", (i, pos[1]), "with grid", grid[i][pos[0]])
         if grid[i][pos[1]] == num and pos[0] != i:
+            #print("NOT VALID,", (i, pos[1]))
             return False
 
     box_x = pos[1] // 3
     box_y = pos[0] // 3
     for i in range(box_y*3, box_y*3 + 3):
         for j in range(box_x*3, box_x*3 + 3):
+            #print("checking position,", (box_x, box_y), "with grid", grid[box_x][box_y])
             if grid[i][j] == num and (i, j) != pos:
+                #print("NOT VALID,", (box_x, box_y))
                 return False
     return True
 
@@ -63,9 +71,9 @@ def print_grid(grid):
         print()
 
 
-# new_grid = create_grid_fill()
+#new_grid = create_grid_fill()
 
-# print_grid(new_grid)
+#print_grid(new_grid)
 
 # print(new_grid)
 
