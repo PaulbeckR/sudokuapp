@@ -1,62 +1,62 @@
-from BuildPuzzle import *
-from PreparePuzzle import*
-from scratch import *
+# from BuildPuzzle import *
+# from PreparePuzzle import*
+# from scratch import *
 
 
-import random
+# import random
 
 
-'''
-Back solver using remove 1 num at time approach:
+# '''
+# Back solver using remove 1 num at time approach:
 
-1. create board
-2. remove one num 
-3. try to solve: (Runthrough + fill grid)
-    - if solved with no rand choice - remove again. 
-    - with rand choice: try all valid solutions - count num of valid. 
-        - if 2+ solutions:
-            - not unique, add back num. 
-                - if 17-40: remove other num 
-        - if 1 solution: remove another (if 17-40)
+# 1. create board
+# 2. remove one num 
+# 3. try to solve: (Runthrough + fill grid)
+#     - if solved with no rand choice - remove again. 
+#     - with rand choice: try all valid solutions - count num of valid. 
+#         - if 2+ solutions:
+#             - not unique, add back num. 
+#                 - if 17-40: remove other num 
+#         - if 1 solution: remove another (if 17-40)
         
 
-A. Fillgrid - solver uses smallest array available to select random. (shorter processing)
-B. shuffle_positions - removes number at a position determined by random position list: (prevents removing same square?)
-    - may not matter, would just retry again / odds low for dupes.
+# A. Fillgrid - solver uses smallest array available to select random. (shorter processing)
+# B. shuffle_positions - removes number at a position determined by random position list: (prevents removing same square?)
+#     - may not matter, would just retry again / odds low for dupes.
     
     
-Two grids - one to remove/solve, and a copy of available arrays for removed nums. 
+# Two grids - one to remove/solve, and a copy of available arrays for removed nums. 
 
 
-Main methods: 
+# Main methods: 
 
-Fillgrid: fills grid using backtracking for valid solutions + runthrough added. 
+# Fillgrid: fills grid using backtracking for valid solutions + runthrough added. 
 
-Unique: holds count for solve attempts; using most recent random as pivot point. 
+# Unique: holds count for solve attempts; using most recent random as pivot point. 
 
-Board Loop - primary method calling fill/unique methods. Maintains loop until unique board found with 17-40 clues.      
+# Board Loop - primary method calling fill/unique methods. Maintains loop until unique board found with 17-40 clues.      
         
 
-'''
+# '''
 
-def num_frequency(grid):
-    num_freq = dict()
-    num_list = [1,2,3,4,5,6,7,8,9]
-    num_set = set()
+# def num_frequency(grid):
+#     num_freq = dict()
+#     num_list = [1,2,3,4,5,6,7,8,9]
+#     num_set = set()
     
  
-    for i in range(9):
+#     for i in range(9):
         
-        for j in range(9):
-            if grid[i][j] in num_list:
-                num_set.add(grid[i][j])
+#         for j in range(9):
+#             if grid[i][j] in num_list:
+#                 num_set.add(grid[i][j])
     
-   # print("num set is ", num_set)
+#    # print("num set is ", num_set)
    
-    if len(num_set) == 9:
+#     if len(num_set) == 9:
 
-        return True
-    return False
+#         return True
+#     return False
             
                 
 
@@ -64,715 +64,715 @@ def num_frequency(grid):
 
    
 
-def runthrough3(rungrid):
-#print("STARTING RUNTHROUGH ")
+# def runthrough3(rungrid):
+# #print("STARTING RUNTHROUGH ")
     
-    gcope = copy.deepcopy(rungrid)
+#     gcope = copy.deepcopy(rungrid)
     
-    for i in range(9):
-        for j in range(9):
-            if type(gcope[i][j]) is not int: [gcope[i][j]] = gcope[i][j]
-    
-    
-    grid = create_arrays(gcope)
+#     for i in range(9):
+#         for j in range(9):
+#             if type(gcope[i][j]) is not int: [gcope[i][j]] = gcope[i][j]
     
     
-   # print("AFTER ADDING ARRAYS IN RUNTHROUGH ")
-    #print_pos_grid(grid)
+#     grid = create_arrays(gcope)
+    
+    
+#    # print("AFTER ADDING ARRAYS IN RUNTHROUGH ")
+#     #print_pos_grid(grid)
    
     
-    total_changes = 1
+#     total_changes = 1
     
    
-    basic = 0
-    candidate_lines = 0
-    hidden = 0
-    xwings = 0
+#     basic = 0
+#     candidate_lines = 0
+#     hidden = 0
+#     xwings = 0
     
-    while total_changes != 0:
-    #run until 0 changes for all
+#     while total_changes != 0:
+#     #run until 0 changes for all
 
-        grida, changes = basic_solve2(grid)
-        basic  = basic + changes
+#         grida, changes = basic_solve2(grid)
+#         basic  = basic + changes
 
-        gridb, removed = gen_hidden_loop(grida) 
+#         gridb, removed = gen_hidden_loop(grida) 
         
         
-        hidden = hidden + removed
+#         hidden = hidden + removed
     
-        gridcl, count = check_lonely_nums(gridb)
+#         gridcl, count = check_lonely_nums(gridb)
         
-        candidate_lines = candidate_lines + count
+#         candidate_lines = candidate_lines + count
  
     
-        #Already updating arrays within CL
+#         #Already updating arrays within CL
         
         
-        gridx, xwingcount = xwing(gridcl)
-        xwings = xwingcount + xwings
+#         gridx, xwingcount = xwing(gridcl)
+#         xwings = xwingcount + xwings
 
         
-        update_changes, gridx = update_array(gridx)
+#         update_changes, gridx = update_array(gridx)
         
-        basic = update_changes + basic
+#         basic = update_changes + basic
         
-        total_changes = (changes + count + removed + xwingcount)
+#         total_changes = (changes + count + removed + xwingcount)
     
-    solved_after_run = solved_square(gridx)
-    difficulty_dictionary = {"Basic": basic, "Hidden": hidden, "Candidates": candidate_lines, "Xwing": xwings, "Solved": solved_after_run}
+#     solved_after_run = solved_square(gridx)
+#     difficulty_dictionary = {"Basic": basic, "Hidden": hidden, "Candidates": candidate_lines, "Xwing": xwings, "Solved": solved_after_run}
    
     
-    check = copy.deepcopy(gridx)
-    checkas = back_to_board(check)    
+#     check = copy.deepcopy(gridx)
+#     checkas = back_to_board(check)    
     
-    #print(solved_square(gridx), "AFTER!!!! full runthrough", comp_sq(checkas))
+#     #print(solved_square(gridx), "AFTER!!!! full runthrough", comp_sq(checkas))
         
-    return gridx , difficulty_dictionary
+#     return gridx , difficulty_dictionary
 
-def get_difficulty_level(board):
-    # Easy = 0 
-    # Medium = 1
-    # hard = 2 
+# def get_difficulty_level(board):
+#     # Easy = 0 
+#     # Medium = 1
+#     # hard = 2 
     
-    level = 0
-    grid, mydict = runthrough3(board)
+#     level = 0
+#     grid, mydict = runthrough3(board)
     
-    print(mydict)
+#     print(mydict)
     
     
  
-    if  (mydict["Basic"] <= 10) and (mydict["Hidden"] >=4) or (mydict["Candidates"] >=4) or (mydict["Solved"] <=35):
-        level = 1 
-    elif (mydict["Xwing"] >= 1 ) or (mydict["Hidden"] >=8) or (mydict["Solved"] <= 30):
-        level =2
+#     if  (mydict["Basic"] <= 10) and (mydict["Hidden"] >=4) or (mydict["Candidates"] >=4) or (mydict["Solved"] <=35):
+#         level = 1 
+#     elif (mydict["Xwing"] >= 1 ) or (mydict["Hidden"] >=8) or (mydict["Solved"] <= 30):
+#         level =2
         
  
-    return level
+#     return level
 
 
-def get_difficulty_level2(mydict):
-    # Easy = 0 
-    # Medium = 1
-    # hard = 2 
+# def get_difficulty_level2(mydict):
+#     # Easy = 0 
+#     # Medium = 1
+#     # hard = 2 
     
-    level = 0
+#     level = 0
 
-    if  (mydict["Basic"] <= 10) and (mydict["Hidden"] >=4) or (mydict["Candidates"] >=4) or (mydict["Solved"] <=75):
-        level = 1 
-    elif (mydict["Xwing"] >= 1 ) or (mydict["Hidden"] >=8) or (mydict["Candidates"] >=8) or (mydict["Solved"] <= 60):
-        level =2
+#     if  (mydict["Basic"] <= 10) and (mydict["Hidden"] >=4) or (mydict["Candidates"] >=4) or (mydict["Solved"] <=75):
+#         level = 1 
+#     elif (mydict["Xwing"] >= 1 ) or (mydict["Hidden"] >=8) or (mydict["Candidates"] >=8) or (mydict["Solved"] <= 60):
+#         level =2
         
-    #global difficulty_level
-    return level
+#     #global difficulty_level
+#     return level
 
 
 
-def is_valid_fill(grid):
-    for i in range(9):
-        for j in range(9):
+# def is_valid_fill(grid):
+#     for i in range(9):
+#         for j in range(9):
             
-            num = grid[i][j]
-            pos = (i,j)
-            if is_valid(grid, pos, num) == False:
-               # print("NOT VALID ", pos, num)
-                return False
-    return True
+#             num = grid[i][j]
+#             pos = (i,j)
+#             if is_valid(grid, pos, num) == False:
+#                # print("NOT VALID ", pos, num)
+#                 return False
+#     return True
     
 
-def shuffle_positions():
+# def shuffle_positions():
     
-    all_positions = []
-    for i in range(9):
-        for j in range(9):
-            all_positions.append((i,j))
+#     all_positions = []
+#     for i in range(9):
+#         for j in range(9):
+#             all_positions.append((i,j))
             
-    random.shuffle(all_positions)
+#     random.shuffle(all_positions)
     
-    return all_positions
+#     return all_positions
 
 
-def fill_withsolve(gridarry, gridzero):
+# def fill_withsolve(gridarry, gridzero):
 
-    #gridarr = find_array(gridarry)
+#     #gridarr = find_array(gridarry)
     
-    empty = find_empty(gridzero)
-    #print("array for fill is at ", gridarr)
+#     empty = find_empty(gridzero)
+#     #print("array for fill is at ", gridarr)
  
     
-    if not empty:
-        # print("....................................................")
-        #print("..............no more arrays in fill...............")
+#     if not empty:
+#         # print("....................................................")
+#         #print("..............no more arrays in fill...............")
  
-        return True
+#         return True
     
-    row, col = empty
-   # print("LOOKING TO SET ARRAY", gridarry[row][col] , "at ", (row,col))
+#     row, col = empty
+#    # print("LOOKING TO SET ARRAY", gridarry[row][col] , "at ", (row,col))
    
    
-    '''could use gridarray, just never update the arrays, '''
+#     '''could use gridarray, just never update the arrays, '''
    
-    nums = gridarry[row][col]
-    #nums = [1,2,3,4,5,6,7,8,9]
+#     nums = gridarry[row][col]
+#     #nums = [1,2,3,4,5,6,7,8,9]
     
-    num_valid = 0
+#     num_valid = 0
                 
 
-    for num in nums:
-       # print("trying ", num, "for position", (row,col), "from array", gridzero[row][col])
-        if is_valid(gridzero, (row, col), num):
-            num_valid +=1
+#     for num in nums:
+#        # print("trying ", num, "for position", (row,col), "from array", gridzero[row][col])
+#         if is_valid(gridzero, (row, col), num):
+#             num_valid +=1
             
-            gridzero[row][col]= num
+#             gridzero[row][col]= num
             
            
-            if fill_withsolve(gridarry, gridzero):
+#             if fill_withsolve(gridarry, gridzero):
                
-                return True
+#                 return True
          
-            gridzero[row][col] = 0
+#             gridzero[row][col] = 0
         
      
-    return False
+#     return False
 
 
 
-def get_random_num(grid):
-    #print("Grid inside get_random")
-    #print_grid(grid)
+# def get_random_num(grid):
+#     #print("Grid inside get_random")
+#     #print_grid(grid)
     
-    rows = [0,1,2,3,4,5,6,7,8]
-    cols = [0,1,2,3,4,5,6,7,8]
+#     rows = [0,1,2,3,4,5,6,7,8]
+#     cols = [0,1,2,3,4,5,6,7,8]
     
-    random_num = 0
-    while random_num == 0:
+#     random_num = 0
+#     while random_num == 0:
   
-        ran_row = random.choice(rows)
-        #print("ran_row is ", ran_row)
-        ran_col = random.choice(cols)
-        #print("ran_col is ", ran_col)
+#         ran_row = random.choice(rows)
+#         #print("ran_row is ", ran_row)
+#         ran_col = random.choice(cols)
+#         #print("ran_col is ", ran_col)
     
-        random_num = grid[ran_row][ran_col]
-        #print("random num in get random is ", random_num)
+#         random_num = grid[ran_row][ran_col]
+#         #print("random num in get random is ", random_num)
     
-        position = (ran_row, ran_col)
+#         position = (ran_row, ran_col)
     
-    if random_num != 0:
+#     if random_num != 0:
         
     
     
     
-        return ran_row, ran_col
+#         return ran_row, ran_col
     
 
 
-glob_difflevel = 9
+# glob_difflevel = 9
 
 
-''' Takes filled board and removes one num at a time'''
-def create_unique( orig_board, difficulty): 
-    arrayboard = copy.deepcopy(orig_board)
+# ''' Takes filled board and removes one num at a time'''
+# def create_unique( orig_board, difficulty): 
+#     arrayboard = copy.deepcopy(orig_board)
 
-    zerosboard = copy.deepcopy(orig_board)
+#     zerosboard = copy.deepcopy(orig_board)
 
-    count = 0
+#     count = 0
   
     
     
     
-    while comp_sq(zerosboard) > 17:
-    #while count < 60:
+#     while comp_sq(zerosboard) > 17:
+#     #while count < 60:
     
-        rand_row = 0
-        rand_col = 0
+#         rand_row = 0
+#         rand_col = 0
       
-        rand_row, rand_col = get_random_num(zerosboard)
+#         rand_row, rand_col = get_random_num(zerosboard)
     
        
-        remove_backup = zerosboard[rand_row][rand_col]
+#         remove_backup = zerosboard[rand_row][rand_col]
         
-       # print("REMOVING NEXT CLUE FROM CREATE_UNIQUE>>>>>>>>>>>>>>>>>>>>", (rand_row, rand_col) ,"CLUE COUNT IS", comp_sq(zerosboard))
+#        # print("REMOVING NEXT CLUE FROM CREATE_UNIQUE>>>>>>>>>>>>>>>>>>>>", (rand_row, rand_col) ,"CLUE COUNT IS", comp_sq(zerosboard))
         
-        zerosboard[rand_row][rand_col] = 0
-        arrayboard[rand_row][rand_col] = 0
+#         zerosboard[rand_row][rand_col] = 0
+#         arrayboard[rand_row][rand_col] = 0
        
-        #print_grid(arrayboard)
+#         #print_grid(arrayboard)
             
-        solution_count = try_to_solve2(arrayboard,  orig_board)
-        #print(solution_count, "is solution count AFTER TRY TO SOLVE ")
+#         solution_count = try_to_solve2(arrayboard,  orig_board)
+#         #print(solution_count, "is solution count AFTER TRY TO SOLVE ")
         
        
-       # print(glob_difflevel, "is glob_difflevel")
+#        # print(glob_difflevel, "is glob_difflevel")
        
-        count  += 1
-        #print("count is ", count)
+#         count  += 1
+#         #print("count is ", count)
     
-        #print("CURRENT COMP SQUARE", comp_sq(arrayboard))
+#         #print("CURRENT COMP SQUARE", comp_sq(arrayboard))
         
-        if count == 250:
-            print("OG OG GRID")
-            print_grid(orig_board)
+#         if count == 250:
+#             print("OG OG GRID")
+#             print_grid(orig_board)
         
             
-            print("COUNT IS ", count)
-            count = 0
-            print("HELLOOOOOOOOOOOOOOOO")
-            #mynewgame, orig_board = new_sudoku_board(difficulty)
-            complete_grid2 = create_grid_fill()
-            arrayboard = copy.deepcopy(complete_grid2)
+#             print("COUNT IS ", count)
+#             count = 0
+#             print("HELLOOOOOOOOOOOOOOOO")
+#             #mynewgame, orig_board = new_sudoku_board(difficulty)
+#             complete_grid2 = create_grid_fill()
+#             arrayboard = copy.deepcopy(complete_grid2)
     
-            zerosboard = copy.deepcopy(complete_grid2)
+#             zerosboard = copy.deepcopy(complete_grid2)
             
-            orig_board = complete_grid2
-            print("NEW BOARD - reset")
-            print(".....................................................")
-            print(".....................................................")
-            print(".....................................................")
-            print("NEW OG GRID")
-            print_grid(orig_board)
-            #create_unique(orig_board, difficulty)
-            continue
+#             orig_board = complete_grid2
+#             print("NEW BOARD - reset")
+#             print(".....................................................")
+#             print(".....................................................")
+#             print(".....................................................")
+#             print("NEW OG GRID")
+#             print_grid(orig_board)
+#             #create_unique(orig_board, difficulty)
+#             continue
   
-        if solution_count == True:
-            if (comp_sq(zerosboard) < 35):
-               # print("FOUND solutiONNnnnnnnnn", comp_sq(zerosboard))
+#         if solution_count == True:
+#             if (comp_sq(zerosboard) < 35):
+#                # print("FOUND solutiONNnnnnnnnn", comp_sq(zerosboard))
              
 
-                #level2 = get_difficulty_level(arrayboard)
-                #print("difficulty level is ", level2)
+#                 #level2 = get_difficulty_level(arrayboard)
+#                 #print("difficulty level is ", level2)
                 
             
-                #if (level2 == difficulty) and (num_frequency(zerosboard) == True):
-                if (glob_difflevel == difficulty) and (num_frequency(zerosboard) == True):
+#                 #if (level2 == difficulty) and (num_frequency(zerosboard) == True):
+#                 if (glob_difflevel == difficulty) and (num_frequency(zerosboard) == True):
             
-                    # print("difficulty is ", difficulty)
+#                     # print("difficulty is ", difficulty)
             
-                    # if (comp_sq(zerosboard) < 26) and (num_frequency(zerosboard) == True):
+#                     # if (comp_sq(zerosboard) < 26) and (num_frequency(zerosboard) == True):
                 
-                    print("difficulty level is ", difficulty)
+#                     print("difficulty level is ", difficulty)
             
             
-                    print("I am here")
-                    #print("Count is ", count)
+#                     print("I am here")
+#                     #print("Count is ", count)
                     
-                    print("Completed squares is", comp_sq(zerosboard))
+#                     print("Completed squares is", comp_sq(zerosboard))
                  
                     
                    
-                    return orig_board, zerosboard
+#                     return orig_board, zerosboard
                     
                 
          
-        elif (solution_count == False) or (num_frequency(zerosboard) == False) :
-            #print("solution_count is greater than 1: backup at create_unique", solution_count)
+#         elif (solution_count == False) or (num_frequency(zerosboard) == False) :
+#             #print("solution_count is greater than 1: backup at create_unique", solution_count)
             
-            arrayboard[rand_row][rand_col] = remove_backup
-           # print("Changing removed clue in ARRAYSBOARD back to ", arrayboard[rand_row][rand_col], "at", (rand_row, rand_col))
+#             arrayboard[rand_row][rand_col] = remove_backup
+#            # print("Changing removed clue in ARRAYSBOARD back to ", arrayboard[rand_row][rand_col], "at", (rand_row, rand_col))
             
-            zerosboard[rand_row][rand_col] = remove_backup
-             #print("Changing removed clue in ZEROSBOARD back to ", arrayboard[rand_row][rand_col], "at", (rand_row, rand_col))
+#             zerosboard[rand_row][rand_col] = remove_backup
+#              #print("Changing removed clue in ZEROSBOARD back to ", arrayboard[rand_row][rand_col], "at", (rand_row, rand_col))
             
-   # print("COUNT IS", count)
-   # print("Complete squares (not met at min)", comp_sq(zerosboard))
+#    # print("COUNT IS", count)
+#    # print("Complete squares (not met at min)", comp_sq(zerosboard))
    
    
 
-    return orig_board, zerosboard
+#     return orig_board, zerosboard
    
-# Think this is in SCRATCH
-def back_to_board(grid):
-    #print("PRINTING GRID IN BACK TO BOARD")
-    #print_grid(grid)
-    for i in range(9):
-        for j in range(9):
-            if type(grid[i][j]) is int: grid[i][j] = [grid[i][j]]
+# # Think this is in SCRATCH
+# def back_to_board(grid):
+#     #print("PRINTING GRID IN BACK TO BOARD")
+#     #print_grid(grid)
+#     for i in range(9):
+#         for j in range(9):
+#             if type(grid[i][j]) is int: grid[i][j] = [grid[i][j]]
             
-            if len(grid[i][j]) > 1: 
-                grid[i][j] = 0
+#             if len(grid[i][j]) > 1: 
+#                 grid[i][j] = 0
             
-            if type(grid[i][j]) is list: [grid[i][j]] = grid[i][j]
-    return grid
+#             if type(grid[i][j]) is list: [grid[i][j]] = grid[i][j]
+#     return grid
    
 
-#dupe, not used        
-def try_to_solve (array2, og_board, difficulty):
+# #dupe, not used        
+# def try_to_solve (array2, og_board, difficulty):
     
    
-    arrayrun, diff_dict = runthrough3(array2)
+#     arrayrun, diff_dict = runthrough3(array2)
     
-    diff_level = get_difficulty_level(diff_dict)
+#     diff_level = get_difficulty_level(diff_dict)
     
  
-    arrayb = copy.deepcopy(arrayrun)
-    zeros = back_to_board(arrayrun)
+#     arrayb = copy.deepcopy(arrayrun)
+#     zeros = back_to_board(arrayrun)
     
-    print("START OF TRY TO SOLVE:")
+#     print("START OF TRY TO SOLVE:")
     
  
-    #print_pos_grid(arrayb)
-    random_count = 0
-    trycount = 1
-    multiple_solutions = 0
-    valid_count = 0
-    invalid_boards = 0
+#     #print_pos_grid(arrayb)
+#     random_count = 0
+#     trycount = 1
+#     multiple_solutions = 0
+#     valid_count = 0
+#     invalid_boards = 0
     
-    #count for how many valid matching solutions are found.
-    solutions = 0 
+#     #count for how many valid matching solutions are found.
+#     solutions = 0 
 
-    if find_array(arrayb) == None:
-        print("no arrays")
-        #print(arrayb)
-        #return trycount
+#     if find_array(arrayb) == None:
+#         print("no arrays")
+#         #print(arrayb)
+#         #return trycount
     
-    #print("clue count is ", comp_sq(zeros2))
-    ''' SHOULD ADD A VALID CHECK HERE'''
-    if comp_sq(zeros) == 81:
+#     #print("clue count is ", comp_sq(zeros2))
+#     ''' SHOULD ADD A VALID CHECK HERE'''
+#     if comp_sq(zeros) == 81:
         
-        return True
+#         return True
 
-    count_loop = 0
+#     count_loop = 0
     
-    #print("rand backup is ", rand_backup, "at" , (rand_row, rand_col))
-    backup_arrays = copy.deepcopy(arrayb)
-    backup_zeros = copy.deepcopy(zeros)
+#     #print("rand backup is ", rand_backup, "at" , (rand_row, rand_col))
+#     backup_arrays = copy.deepcopy(arrayb)
+#     backup_zeros = copy.deepcopy(zeros)
     
-    trysolve = copy.deepcopy(arrayb)
-    # while there are still arrays after a runthgouh (should skip for most clue removals.)
-    if find_array(arrayb) != None:   
-    #while count_loop < 25:
+#     trysolve = copy.deepcopy(arrayb)
+#     # while there are still arrays after a runthgouh (should skip for most clue removals.)
+#     if find_array(arrayb) != None:   
+#     #while count_loop < 25:
         
-        for i in range(9):
-            for j in range(9):
-                if zeros[i][j] == 0:
-                    backup_sol = trysolve[i][j]
-                    #print("Completed squares before num assign:", comp_sq(zeros))
+#         for i in range(9):
+#             for j in range(9):
+#                 if zeros[i][j] == 0:
+#                     backup_sol = trysolve[i][j]
+#                     #print("Completed squares before num assign:", comp_sq(zeros))
                     
-                    #print("backup in TRYTOSOLVE is ", backup_sol)
-                    trynums = trysolve[i][j]
-                    random_count += 1
+#                     #print("backup in TRYTOSOLVE is ", backup_sol)
+#                     trynums = trysolve[i][j]
+#                     random_count += 1
                     
-                    for num in trynums:
-                        arrayb[i][j] = [num]
-                        zeros[i][j] = num
-                        #print("TRY TO SOLVE: trying nums ", trynums, "at", (i,j), "with num,", num)
+#                     for num in trynums:
+#                         arrayb[i][j] = [num]
+#                         zeros[i][j] = num
+#                         #print("TRY TO SOLVE: trying nums ", trynums, "at", (i,j), "with num,", num)
 
                        
                         
                         
-                        count_loop += 1
-                        solve_attempt = copy.deepcopy(trysolve)
+#                         count_loop += 1
+#                         solve_attempt = copy.deepcopy(trysolve)
                        
-                        solve_zeros = copy.deepcopy(zeros)
+#                         solve_zeros = copy.deepcopy(zeros)
                         
-                        if fill_withsolve(solve_attempt, solve_zeros) == True:
-                            #trycount += 1
-                            #count_loop += 1
-                            print("fill_withsolve is completed , printing solve_attempt")
-                            print_pos_grid(solve_attempt)
+#                         if fill_withsolve(solve_attempt, solve_zeros) == True:
+#                             #trycount += 1
+#                             #count_loop += 1
+#                             print("fill_withsolve is completed , printing solve_attempt")
+#                             print_pos_grid(solve_attempt)
 
                             
-                            if is_valid_fill(solve_attempt) == True:
-                                valid_count += 1
-                                #print_grid(solve_attempt)
+#                             if is_valid_fill(solve_attempt) == True:
+#                                 valid_count += 1
+#                                 #print_grid(solve_attempt)
                            
-                                #print("fill_withsolve made a VALID board")
+#                                 #print("fill_withsolve made a VALID board")
                             
-                                if test_if_equal(solve_attempt, og_board) == False:
+#                                 if test_if_equal(solve_attempt, og_board) == False:
                                     
-                                    print("boards did not match")
-                                    print("!!!!!!!!!!!!!!!!!!!!")
-                                    print("!!!!!!!!!!!!!!!!!!!!")
-                                    #print_grid(solve_attempt)
+#                                     print("boards did not match")
+#                                     print("!!!!!!!!!!!!!!!!!!!!")
+#                                     print("!!!!!!!!!!!!!!!!!!!!")
+#                                     #print_grid(solve_attempt)
                                     
 
                                 
-                                    trycount += 1
-                                    multiple_solutions += 1
-                                    #continue
-                                    if trycount >= 2:
-                                        print("trycount greater or equal than 2, returning count")
-                                        return False
-                                else:
-                                    #test_if_equal(solve_attempt, og_board) == True:
-                                    #print("TEST WAS EQUAL!!!!!!!")
-                                    # print_grid(solve_attempt)
-                                    # print("......................................")
-                                    # print("OG board")
-                                    # print_grid(og_board)
-                                    #trycount +=1
-                                    solutions += 1
-                                    continue
-                            else:
-                                #is_valid_fill(solve_attempt) == False:
-                                print("BOARD NOT VALID")
-                                invalid_boards += 1
-                                multiple_solutions += 1
+#                                     trycount += 1
+#                                     multiple_solutions += 1
+#                                     #continue
+#                                     if trycount >= 2:
+#                                         print("trycount greater or equal than 2, returning count")
+#                                         return False
+#                                 else:
+#                                     #test_if_equal(solve_attempt, og_board) == True:
+#                                     #print("TEST WAS EQUAL!!!!!!!")
+#                                     # print_grid(solve_attempt)
+#                                     # print("......................................")
+#                                     # print("OG board")
+#                                     # print_grid(og_board)
+#                                     #trycount +=1
+#                                     solutions += 1
+#                                     continue
+#                             else:
+#                                 #is_valid_fill(solve_attempt) == False:
+#                                 print("BOARD NOT VALID")
+#                                 invalid_boards += 1
+#                                 multiple_solutions += 1
                                  
                 
-                        arrayb[i][j] = backup_sol
-                        arrayb = backup_arrays
+#                         arrayb[i][j] = backup_sol
+#                         arrayb = backup_arrays
                         
-                        #print("resetting array in TRY_TO_sOLVE", arrayb[i][j])
-                        zeros[i][j] = 0
-                        zeros = backup_zeros
-                        random_count -= 1
-            print("Try_to_solve, tried all arrays ", i, j, "matches were:", solutions, "multi-solutions:", multiple_solutions)
-        # # if valid_count == 0:
-        # #     return valid_count
-        #     #There were NO solutions 
-        # print(trycount, "is TRYCOUNT.")
-        # print(random_count, "is random count")
-        # print("valid count is ", valid_count)
-        # print("ADDITIONAL MATCHES ", multiple_solutions)
-        # print("MATCHED solutions", solutions)
-        # print("Complete but invalid boards", invalid_boards)
-        # print("count loop is ", count_loop)
+#                         #print("resetting array in TRY_TO_sOLVE", arrayb[i][j])
+#                         zeros[i][j] = 0
+#                         zeros = backup_zeros
+#                         random_count -= 1
+#             print("Try_to_solve, tried all arrays ", i, j, "matches were:", solutions, "multi-solutions:", multiple_solutions)
+#         # # if valid_count == 0:
+#         # #     return valid_count
+#         #     #There were NO solutions 
+#         # print(trycount, "is TRYCOUNT.")
+#         # print(random_count, "is random count")
+#         # print("valid count is ", valid_count)
+#         # print("ADDITIONAL MATCHES ", multiple_solutions)
+#         # print("MATCHED solutions", solutions)
+#         # print("Complete but invalid boards", invalid_boards)
+#         # print("count loop is ", count_loop)
         
         
         
         
-        if (solutions >= 1) and (multiple_solutions == 0) and (diff_level == difficulty):
-            return True
-        else:
-            return False
+#         if (solutions >= 1) and (multiple_solutions == 0) and (diff_level == difficulty):
+#             return True
+#         else:
+#             return False
             
     
     
-    # if (trycount > 1) or (valid_count == 0):
-    #     return False
-    # elif trycount == 1:
-    #     return True
+#     # if (trycount > 1) or (valid_count == 0):
+#     #     return False
+#     # elif trycount == 1:
+#     #     return True
     
     
     
     
-    #return trycount    
+#     #return trycount    
     
     
     
     
-def try_to_solve2 (array2, orig):
-    ''' Shoudl just make this a return True/False
+# def try_to_solve2 (array2, orig):
+#     ''' Shoudl just make this a return True/False
     
-    True : Only one valid solution is found that matches. If any other matches found, false.
-    False: More than one valid solution found (doesn't match Og). OR - no solutions found after reviewing all arrays.
-    
-    
-    
-    '''
-    #print("start of try to solve ", comp_sq(array2))
-    #print_grid(array2)
-    
-    #print("running through try_to_solve.....................")
-    
-    arrayrun, diff_dict= runthrough3(array2)
-    
-    diff_level = get_difficulty_level2(diff_dict)
-    # print("Difficulty level is ", diff_level)
-    # print("Desired difficulty is ", difficulty)
-    # print("DIFF DICT: ", diff_dict)
-    
-    global glob_difflevel
-    glob_difflevel = diff_level
+#     True : Only one valid solution is found that matches. If any other matches found, false.
+#     False: More than one valid solution found (doesn't match Og). OR - no solutions found after reviewing all arrays.
     
     
     
+#     '''
+#     #print("start of try to solve ", comp_sq(array2))
+#     #print_grid(array2)
     
-    Aa = copy.deepcopy(arrayrun)
-    Zz = back_to_board(arrayrun)
+#     #print("running through try_to_solve.....................")
+    
+#     arrayrun, diff_dict= runthrough3(array2)
+    
+#     diff_level = get_difficulty_level2(diff_dict)
+#     # print("Difficulty level is ", diff_level)
+#     # print("Desired difficulty is ", difficulty)
+#     # print("DIFF DICT: ", diff_dict)
+    
+#     global glob_difflevel
+#     glob_difflevel = diff_level
+    
+    
+    
+    
+#     Aa = copy.deepcopy(arrayrun)
+#     Zz = back_to_board(arrayrun)
     
    
     
-    Bb = copy.deepcopy(Aa)
-    Zz = back_to_board(Bb)
+#     Bb = copy.deepcopy(Aa)
+#     Zz = back_to_board(Bb)
     
  
-    mult= 0
-    sol = 0 
+#     mult= 0
+#     sol = 0 
 
  
 
     
-    if (comp_sq(Zz) == 81):
+#     if (comp_sq(Zz) == 81):
         
-        return True
+#         return True
     
-    solutions, multiple_solutions = solve_loop(Aa, Zz, orig, sol, mult)
+#     solutions, multiple_solutions = solve_loop(Aa, Zz, orig, sol, mult)
     
     
-    if (solutions >0) and (multiple_solutions == 0):
-        return True
-    #elif multiple_solutions >= 1:
-    return False
+#     if (solutions >0) and (multiple_solutions == 0):
+#         return True
+#     #elif multiple_solutions >= 1:
+#     return False
     
 
-def solve_loop (arrayb, zeros, og_board, solutions, multiple_solutions):
+# def solve_loop (arrayb, zeros, og_board, solutions, multiple_solutions):
     
-    #print("arrayb at solve loop start")
-    #print_pos_grid(arrayb)
-    total_filled_boards = 0
-    valid_boards = 0
-    invalid_boards = 0
-    count_loop = 0
-    arrays_checked = dict()
-    invalid_boards = 0
-    arrays_total = 0
-    array_len = 0
-    something_else = 0
-    second_solution = dict()
-    key = 0
-    #print("rand backup is ", rand_backup, "at" , (rand_row, rand_col))
-    backup_arrays = copy.deepcopy(arrayb)
-    backup_zeros = copy.deepcopy(zeros)
-    backup_zeros = back_to_board(backup_zeros)
-    #print("Backup Arrays")
-    #print_pos_grid(backup_arrays)
+#     #print("arrayb at solve loop start")
+#     #print_pos_grid(arrayb)
+#     total_filled_boards = 0
+#     valid_boards = 0
+#     invalid_boards = 0
+#     count_loop = 0
+#     arrays_checked = dict()
+#     invalid_boards = 0
+#     arrays_total = 0
+#     array_len = 0
+#     something_else = 0
+#     second_solution = dict()
+#     key = 0
+#     #print("rand backup is ", rand_backup, "at" , (rand_row, rand_col))
+#     backup_arrays = copy.deepcopy(arrayb)
+#     backup_zeros = copy.deepcopy(zeros)
+#     backup_zeros = back_to_board(backup_zeros)
+#     #print("Backup Arrays")
+#     #print_pos_grid(backup_arrays)
     
-    trysolve = copy.deepcopy(arrayb)
+#     trysolve = copy.deepcopy(arrayb)
     
     
-    tryzero = copy.deepcopy(arrayb)
-   # print("TRY ZERO IS ")
-    tryzero = back_to_board(tryzero)
-    #print_grid(tryzero)
-    # while there are still arrays after a runthgouh (should skip for most clue removals.)
-    if find_array(arrayb) != None:   
-    #while count_loop < 25:
-        #print("find array found an array")
+#     tryzero = copy.deepcopy(arrayb)
+#    # print("TRY ZERO IS ")
+#     tryzero = back_to_board(tryzero)
+#     #print_grid(tryzero)
+#     # while there are still arrays after a runthgouh (should skip for most clue removals.)
+#     if find_array(arrayb) != None:   
+#     #while count_loop < 25:
+#         #print("find array found an array")
         
-        for i in range(9):
-            for j in range(9):
-                if tryzero[i][j] == 0:
-                    backup_sol = trysolve[i][j]
-                    #print("Completed squares before num assign:", comp_sq(zeros))
+#         for i in range(9):
+#             for j in range(9):
+#                 if tryzero[i][j] == 0:
+#                     backup_sol = trysolve[i][j]
+#                     #print("Completed squares before num assign:", comp_sq(zeros))
                     
-                    #print("backup in TRYTOSOLVE is ", backup_sol)
-                    trynums = arrayb[i][j]
-                    arrays_total += 1
-                    array_len = array_len + len(trynums)
-                    arrays_checked[(i,j)] = trynums
+#                     #print("backup in TRYTOSOLVE is ", backup_sol)
+#                     trynums = arrayb[i][j]
+#                     arrays_total += 1
+#                     array_len = array_len + len(trynums)
+#                     arrays_checked[(i,j)] = trynums
                     
                     
-                    for num in trynums:
+#                     for num in trynums:
                         
-                        # if no_solution_count == trying_array_length:
-                        #     break
+#                         # if no_solution_count == trying_array_length:
+#                         #     break
                         
-                        count_loop += 1
-                        #print_grid(tryzero)
-                        if is_valid(tryzero, (i, j), num):
+#                         count_loop += 1
+#                         #print_grid(tryzero)
+#                         if is_valid(tryzero, (i, j), num):
                         
 
-                            solve_attempt = copy.deepcopy(trysolve)
+#                             solve_attempt = copy.deepcopy(trysolve)
                             
-                            solve_attempt[i][j] = [num]
-                            mini_arr_update(solve_attempt, (i,j))
+#                             solve_attempt[i][j] = [num]
+#                             mini_arr_update(solve_attempt, (i,j))
                         
                       
-                            # print("BEFore fillwithsolve (after mini update)")
-                            # print_pos_grid(solve_attempt)
+#                             # print("BEFore fillwithsolve (after mini update)")
+#                             # print_pos_grid(solve_attempt)
                             
-                            solve_zeros = copy.deepcopy(solve_attempt)
-                            solve_zeros = back_to_board(solve_zeros)
-                            #print("................solve zeros.................")
-                            #print_grid(solve_zeros)
-                           # print("TRY TO SOLVE: trying nums ", trynums, "at", (i,j), "with num,", num)
+#                             solve_zeros = copy.deepcopy(solve_attempt)
+#                             solve_zeros = back_to_board(solve_zeros)
+#                             #print("................solve zeros.................")
+#                             #print_grid(solve_zeros)
+#                            # print("TRY TO SOLVE: trying nums ", trynums, "at", (i,j), "with num,", num)
                             
                         
-                            if fill_withsolve(solve_attempt, solve_zeros) == True:
+#                             if fill_withsolve(solve_attempt, solve_zeros) == True:
                                 
                                
-                                solved_squares = comp_sq(solve_zeros)
-                                if solved_squares != 81:
-                                    #board not solved
-                                    #print("Board not solved, reset and try next num", (i,j), num)
-                                    invalid_boards += 1
-                                    continue
+#                                 solved_squares = comp_sq(solve_zeros)
+#                                 if solved_squares != 81:
+#                                     #board not solved
+#                                     #print("Board not solved, reset and try next num", (i,j), num)
+#                                     invalid_boards += 1
+#                                     continue
                          
-                                else:
-                                    if is_valid_fill(solve_zeros) == True:
-                                        valid_boards += 1
-                                    # print("Grid after is_valid_fill")
-                                    # print_grid(solve_attempt)
+#                                 else:
+#                                     if is_valid_fill(solve_zeros) == True:
+#                                         valid_boards += 1
+#                                     # print("Grid after is_valid_fill")
+#                                     # print_grid(solve_attempt)
                            
-                                    # print("fill_withsolve made a VALID board")
+#                                     # print("fill_withsolve made a VALID board")
                                 
-                                        if test_if_equal(solve_zeros, og_board) == False:
-                                            key += 1
+#                                         if test_if_equal(solve_zeros, og_board) == False:
+#                                             key += 1
                                     
                                                                                       
-                                            second_solution[key] = solve_zeros
+#                                             second_solution[key] = solve_zeros
                                   
-                                            multiple_solutions += 1
-                                        #continue
-                                    #continue
-                                        if multiple_solutions >= 1:
-                                           # print("trycount greater or equal than 2, returning count")
-                                            return solutions, multiple_solutions
-                                        elif test_if_equal(solve_zeros, og_board) == True:
+#                                             multiple_solutions += 1
+#                                         #continue
+#                                     #continue
+#                                         if multiple_solutions >= 1:
+#                                            # print("trycount greater or equal than 2, returning count")
+#                                             return solutions, multiple_solutions
+#                                         elif test_if_equal(solve_zeros, og_board) == True:
                                         
-                                            #trycount +=1
-                                            solutions += 1
-                                            #continue
-                                        else: 
-                                            #print("Something else is happening after a valid board found")
-                                            # if find_array != None:
-                                            #     print("Why are there arrays in solve zeros?!")
-                                            #     print_pos_grid(solve_zeros)
-                                            # else:
-                                            #     print_grid(solve_zeros)
-                                            something_else += 1
-                                    else:
+#                                             #trycount +=1
+#                                             solutions += 1
+#                                             #continue
+#                                         else: 
+#                                             #print("Something else is happening after a valid board found")
+#                                             # if find_array != None:
+#                                             #     print("Why are there arrays in solve zeros?!")
+#                                             #     print_pos_grid(solve_zeros)
+#                                             # else:
+#                                             #     print_grid(solve_zeros)
+#                                             something_else += 1
+#                                     else:
                                
-                                     #   print("BOARD NOT VALID at above pos")
-                                        # if find_array != None:
-                                        #     print_pos_grid(solve_zeros)
-                                        # else:
-                                        #     print_grid(solve_zeros)
-                                        invalid_boards += 1
-                                    #solutions = 0
-                                    #multiple_solutions = 0
-                            else: 
-                                ''' When fill with solve is FALSE - it means it retraced all steps and tried all pathes, no solutions found!!'''
+#                                      #   print("BOARD NOT VALID at above pos")
+#                                         # if find_array != None:
+#                                         #     print_pos_grid(solve_zeros)
+#                                         # else:
+#                                         #     print_grid(solve_zeros)
+#                                         invalid_boards += 1
+#                                     #solutions = 0
+#                                     #multiple_solutions = 0
+#                             else: 
+#                                 ''' When fill with solve is FALSE - it means it retraced all steps and tried all pathes, no solutions found!!'''
                                 
-                                #solve_loop(solve_attempt, solve_zeros, og_board, solutions, multiple_solutions)
-                               # print("FILL WITH SOLVE NOT TRUE")
-                                # if find_array != None:
-                                #     print_pos_grid(solve_attempt)
-                                # else:
-                                #     print_grid(solve_attempt)
-                                invalid_boards += 1
+#                                 #solve_loop(solve_attempt, solve_zeros, og_board, solutions, multiple_solutions)
+#                                # print("FILL WITH SOLVE NOT TRUE")
+#                                 # if find_array != None:
+#                                 #     print_pos_grid(solve_attempt)
+#                                 # else:
+#                                 #     print_grid(solve_attempt)
+#                                 invalid_boards += 1
                         
                         
-                        #else:
-                          # print( "Num not valid in grid" )
+#                         #else:
+#                           # print( "Num not valid in grid" )
                                  
                         
-                        #print("Resetting trysolve boards", num)
-                        trysolve[i][j] = backup_sol
-                        solve_attempt = trysolve
-                        #print("Trysolve backed up")
-                        #print_pos_grid(trysolve)
+#                         #print("Resetting trysolve boards", num)
+#                         trysolve[i][j] = backup_sol
+#                         solve_attempt = trysolve
+#                         #print("Trysolve backed up")
+#                         #print_pos_grid(trysolve)
                         
-                            #print("resetting array in TRY_TO_sOLVE", arrayb[i][j])
-                        solve_zeros[i][j] = 0
-                        solve_zeros = tryzero
+#                             #print("resetting array in TRY_TO_sOLVE", arrayb[i][j])
+#                         solve_zeros[i][j] = 0
+#                         solve_zeros = tryzero
                         
-                    #print("Try_to_solve, tried all arrays ", i, j, "matches were:", solutions, "multi-solutions:", multiple_solutions)
+#                     #print("Try_to_solve, tried all arrays ", i, j, "matches were:", solutions, "multi-solutions:", multiple_solutions)
        
       
-    # print("TOTAL FILLED BOARDS::::::::::", total_filled_boards)
-    # print("Valid boards: ", valid_boards)
-    # print("Additional Solutions ", multiple_solutions)
-    # print("Board was the same", solutions)
-    # print("Valid boards match total sol/mult sol", valid_boards, (multiple_solutions + solutions))
-    # print("invalid boards", invalid_boards)
-    # print("Loops and Array nums checked: ", count_loop, array_len)
-    # if something_else > 0:
-    #     print("SOMETHING ELSE IS HAPPENING", something_else)
+#     # print("TOTAL FILLED BOARDS::::::::::", total_filled_boards)
+#     # print("Valid boards: ", valid_boards)
+#     # print("Additional Solutions ", multiple_solutions)
+#     # print("Board was the same", solutions)
+#     # print("Valid boards match total sol/mult sol", valid_boards, (multiple_solutions + solutions))
+#     # print("invalid boards", invalid_boards)
+#     # print("Loops and Array nums checked: ", count_loop, array_len)
+#     # if something_else > 0:
+#     #     print("SOMETHING ELSE IS HAPPENING", something_else)
        
 
     
-    return solutions, multiple_solutions
+#     return solutions, multiple_solutions
 
 
                     
@@ -781,60 +781,60 @@ def solve_loop (arrayb, zeros, og_board, solutions, multiple_solutions):
 
 
 
-def new_sudoku_board(difficulty):
+# def new_sudoku_board(difficulty):
     
-    complete_grid = create_grid_fill()
+#     complete_grid = create_grid_fill()
     
-    #game_board = copy.deepcopy(complete_grid)
+#     #game_board = copy.deepcopy(complete_grid)
     
-    #arr = copy.deepcopy(complete_grid)
+#     #arr = copy.deepcopy(complete_grid)
      
-    #zer = copy.deepcopy(complete_grid)
+#     #zer = copy.deepcopy(complete_grid)
  
     
-    orig, zeros = create_unique(complete_grid, difficulty)
+#     orig, zeros = create_unique(complete_grid, difficulty)
     
-    return zeros, orig
+#     return zeros, orig
 
 
-# difficult = 2
-# mynewgame, original = new_sudoku_board(difficult)
+# # difficult = 2
+# # mynewgame, original = new_sudoku_board(difficult)
 
-# print("MY NEW GAME")
-# print_grid(mynewgame)
-# print("                                       ")
-# print("                                       ")
-# print_grid(original)
+# # print("MY NEW GAME")
+# # print_grid(mynewgame)
+# # print("                                       ")
+# # print("                                       ")
+# # print_grid(original)
 
 
 
-# myarrays= create_arrays(mynewgame)
-# ugh, myarrays = update_array(myarrays)
-# # print_pos_grid(myarrays)
+# # myarrays= create_arrays(mynewgame)
+# # ugh, myarrays = update_array(myarrays)
+# # # print_pos_grid(myarrays)
 
-# array_display(myarrays, "hello")
+# # array_display(myarrays, "hello")
    
-# # # # # attempt = try_to_solve2(evil_sudoku, evil_orig)
-# # # # # print("here is my count ", attempt)  
+# # # # # # attempt = try_to_solve2(evil_sudoku, evil_orig)
+# # # # # # print("here is my count ", attempt)  
 
-# print("GOT IT NOW COUNT SOLUTIONS!!!!!!!!")
-# print("GOT IT NOW COUNT SOLUTIONS!!!!!!!!")
-# print("GOT IT NOW COUNT SOLUTIONS!!!!!!!!")
-# print("GOT IT NOW COUNT SOLUTIONS!!!!!!!!")
-# print("GOT IT NOW COUNT SOLUTIONS!!!!!!!!")
-# print("GOT IT NOW COUNT SOLUTIONS!!!!!!!!")
-# print("GOT IT NOW COUNT SOLUTIONS!!!!!!!!")
+# # print("GOT IT NOW COUNT SOLUTIONS!!!!!!!!")
+# # print("GOT IT NOW COUNT SOLUTIONS!!!!!!!!")
+# # print("GOT IT NOW COUNT SOLUTIONS!!!!!!!!")
+# # print("GOT IT NOW COUNT SOLUTIONS!!!!!!!!")
+# # print("GOT IT NOW COUNT SOLUTIONS!!!!!!!!")
+# # print("GOT IT NOW COUNT SOLUTIONS!!!!!!!!")
+# # print("GOT IT NOW COUNT SOLUTIONS!!!!!!!!")
 
     
     
-#solutions, multiple_sol = solve_loop(myarrays, mynewgame, original, 0,0)
+# #solutions, multiple_sol = solve_loop(myarrays, mynewgame, original, 0,0)
 
 
-# testarr = create_arrays(evil_sudoku)
+# # testarr = create_arrays(evil_sudoku)
 
-# c, uatest = update_array(testarr)
+# # c, uatest = update_array(testarr)
 
-# solv, multsol = solve_loop(uatest, testarr, evil_orig, 0,0)
+# # solv, multsol = solve_loop(uatest, testarr, evil_orig, 0,0)
     
     
     
