@@ -6,7 +6,7 @@ const validateButton = document.getElementById("validate");
 // Add this function to fetch a Sudoku board from the backend
 async function fetchSudokuBoard() {
     try {
-      const response = await fetch("http://localhost:5000/generate");
+      const response = await fetch("https://paulbeck.pythonanywhere.com/generate");
       const board = await response.json();
       return board;
     } catch (error) {
