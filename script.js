@@ -4,6 +4,8 @@ const solveButton = document.getElementById("solve");
 const validateButton = document.getElementById("validate");
 
 function renderBoard(boardData) {
+    console.log("Rendering board with data:", boardData);
+
     // Clear any existing board content
     boardElement.innerHTML = '';
   
