@@ -4,8 +4,13 @@ const solveButton = document.getElementById("solve");
 const validateButton = document.getElementById("validate");
 
 // Add this function to fetch a Sudoku board from the backend
-async function fetchSudokuBoard(difficulty) { // Add the difficulty parameter
+async function fetchSudokuBoard(difficulty) { 
+   
+    
+    // Add the difficulty parameter
     try {
+    
+    
       const response = await fetch(`https://paulbeck.pythonanywhere.com/api/sudoku?difficulty=${difficulty}`); // Use backticks for the string
       const board = await response.json();
       return board;
