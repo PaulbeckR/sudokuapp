@@ -36,6 +36,33 @@ async function newGame() {
     }
 }
 
+function renderBoard(boardData) {
+    // Clear any existing board content
+    boardElement.innerHTML = '';
+  
+    // Iterate through the rows and columns of the boardData
+    for (let row = 0; row < 9; row++) {
+      const rowElement = document.createElement("div");
+      rowElement.classList.add("row");
+  
+      for (let col = 0; col < 9; col++) {
+        const cellElement = document.createElement("input");
+        cellElement.classList.add("cell");
+        cellElement.type = "text";
+        cellElement.maxLength = "1";
+        cellElement.value = boardData[row][col] === 0 ? "" : boardData[row][col];
+  
+        rowElement.appendChild(cellElement);
+      }
+  
+      boardElement.appendChild(rowElement);
+    }
+  }
+  
+
+
+
+
 // Add an event listener to the "New Game" button
 newGameButton.addEventListener("click", newGame);
 
