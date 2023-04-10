@@ -13,9 +13,12 @@ async function fetchSudokuBoard(difficulty) {
     
       const response = await fetch(`https://paulbeck.pythonanywhere.com/api/sudoku?difficulty=${difficulty}`); // Use backticks for the string
       const board = await response.json();
+      console.log("API response:", board); 
       return board;
     } catch (error) {
       console.error("Error fetching the Sudoku board:", error);
+      console.error("Error fetching the Sudoku board:", error);
+
       return null;
     }
 }
