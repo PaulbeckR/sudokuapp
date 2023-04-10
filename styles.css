@@ -60,4 +60,19 @@ body {
   button:hover {
     background-color: #444;
   }
+
+  #difficulty-form {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+  
+  #difficulty-form label {
+    margin-right: 1rem;
+  }
+  
+  #difficulty-form input[type="radio"] {
+    margin-right: 0.25rem;
+  }
+  
   

@@ -6,13 +6,17 @@ from BackSolver import *
 
 app = Flask(__name__)
 
-difficult = 2
-mynewgame, original = new_sudoku_board(difficult)
+
+
 
 
 @app.route('/api/sudoku', methods=['GET'])
 def get_sudoku():
-    global mynewgame, original
+    
+    difficulty = request.args.get('difficulty', 'easy')
+    
+    mynewgame, original = new_sudoku_board(difficulty)
+    
     return jsonify({"board": mynewgame, "solution": original})
 
 @app.route('/api/validate', methods=['POST'])

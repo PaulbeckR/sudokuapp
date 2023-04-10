@@ -6,7 +6,7 @@ const validateButton = document.getElementById("validate");
 // Add this function to fetch a Sudoku board from the backend
 async function fetchSudokuBoard() {
     try {
-      const response = await fetch("https://paulbeck.pythonanywhere.com/generate");
+      const response = await fetch("https://paulbeck.pythonanywhere.com/generate?difficulty=${difficulty}");
       const board = await response.json();
       return board;
     } catch (error) {
@@ -17,7 +17,10 @@ async function fetchSudokuBoard() {
   
   // Modify the newGame function to use the fetched board
   async function newGame() {
-    const board = await fetchSudokuBoard();
+    const difficultyForm = document.getElementById("difficulty-form");
+    const selectedDifficulty  = difficultyForm.difficulty.value;
+
+    const board = await fetchSudokuBoard(selectedDifficulty);
     if (board) {
       renderBoard(board);
     } else {
