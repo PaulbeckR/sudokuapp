@@ -39,7 +39,7 @@ async function fetchSudokuBoard(difficulty) {
     })
     .then(response => response.json())
     .then(data => console.log(data))
-    .catch(error => console.error(error));;
+    .catch(error => console.error(error));
       if (!response.ok) {
         console.error("Error fetching the Sudoku board: HTTP status", response.status);
         return null;
