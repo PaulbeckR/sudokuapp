@@ -33,8 +33,13 @@ function renderBoard(boardData) {
 async function fetchSudokuBoard(difficulty) {
     try {
       const response = await fetch(`https://paulbeck.pythonanywhere.com/api/sudoku?difficulty=${difficulty}`, {
-        "method": "GET"
-    });
+        method: 'GET',
+        mode: 'cors'
+
+    })
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.error(error));;
       if (!response.ok) {
         console.error("Error fetching the Sudoku board: HTTP status", response.status);
         return null;
