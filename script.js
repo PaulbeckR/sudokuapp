@@ -40,12 +40,13 @@ async function fetchSudokuBoard(difficulty) {
     .then(response => response.json())
     .then(data => console.log(data))
     .catch(error => console.error(error));
-      if (!response.ok) {
-        console.error("Error fetching the Sudoku board: HTTP status", response.status);
+    if (response.status === 200) {
+        const board = await response.json();
+        return board;
+      } else {
+        console.error(`Failed to fetch Sudoku board. Server returned status code ${response.status}`);
         return null;
       }
-      const board = await response.json();
-      return board;
     } catch (error) {
       console.error("Error fetching the Sudoku board:", error);
       return null;
