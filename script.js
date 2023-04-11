@@ -36,10 +36,10 @@ async function fetchSudokuBoard(difficulty) {
         method: 'GET',
         mode: 'cors'
 
-    })
+        })
     .then(response => response.json())
     .then(data => console.log(data))
-    .catch(error => console.error(error));
+    .catch(error => console.error(error))
     if (response.status === 200) {
         const board = await response.json();
         return board;
