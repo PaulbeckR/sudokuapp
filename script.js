@@ -32,15 +32,8 @@ function renderBoard(boardData) {
 // Add this function to fetch a Sudoku board from the backend
 async function fetchSudokuBoard(difficulty) {
     try {
-      const response = await fetch(`https://paulbeck.pythonanywhere.com/api/sudoku?difficulty=${difficulty}`, {
-        method: 'GET',
-        mode: 'cors'
-
-        })
-    .then(response => response.json())
-    .then(data => console.log(data))
-    .catch(error => console.error(error))
-    if (response.status === 200) {
+      const response = await fetch(`https://paulbeck.pythonanywhere.com/api/sudoku?difficulty=${difficulty}`);
+      if (response.status === 200) {
         const board = await response.json();
         return board;
       } else {
@@ -52,6 +45,7 @@ async function fetchSudokuBoard(difficulty) {
       return null;
     }
   }
+  
   
 
 // Modify the newGame function to use the fetched board
