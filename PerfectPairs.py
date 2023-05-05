@@ -3,16 +3,12 @@ from FindSolutions import *
 from TestingDisplay import *
 
 ''''
+<<<NOT USING THIS AT ALL>>> This finds perfect pairs, only when two squares of the same row/col/box have the same two numbers and 
+only contain those two numbers. HIDDEN.py allows for looking within arrays as well. 
+
+
 Script to support advanced solve solutions. From https://www.sudokuoftheday.com/techniques/hidden-pairs-triples
 
-Candidate Lines: 
-
-Finding any numbers 0-9 that occur only on a single 3x3 row or column. Where 4 may only occur (exist in array) in 
-in positions (7,8) and (8,8). for the last 3x3 box. Any other 4s listed in arrays of column 7 would be ineligible.
-This is because of a natural limit set by the 4 being required in column 7 AND in the last box.
-
-
-Double Pairs: 
 
 
 Multiple Lines: 
@@ -48,16 +44,13 @@ removed , as well as the 1,3 from the subsequent row/col/3x3 positions.
 # the second paired element. It didnt continue down the col, as it had skipped to box, and so missed removing two elements
 # from two seperate squares.
 def perfect_pairs(grid):
-    # start comparisons with first element.
-    #print(":::::::::::::::::::::::::::::::::::")
-    #print("STARTING PERFECT PAIRS TEST")
-    #print(":::::::::::::::::::::::::::::::::::")
+ 
     for i in range(9):
         for j in range(9):
 
             if len(grid[i][j]) == 2: 
                 
-                #print("::::::::::::CURRENT ARRAY IS ", grid[i][j], "at location ", (i,j))
+                
               
 
                 first_array = grid[i][j]
@@ -67,7 +60,7 @@ def perfect_pairs(grid):
                     
                     # only if the row array is a length of 2
                     if len(grid[i][col_ofrowcheck]) == 2:  
-                        #print("Comparing first_arr to ", grid[i][col_ofrowcheck], "at ROW location ", (i,col_ofrowcheck))
+                        
                         
                         pair_row = grid[i][col_ofrowcheck]
                         # if the first arr and the position being searched are a match (and not the same location)
@@ -98,11 +91,9 @@ def perfect_pairs(grid):
                     if len(pair_col) == 2:  
                         
                                                 
-                        #print("comparing first_arr to ", pair_col, "at COL location ", (row_ofcolcheck,j))
                         #if the search array matches the compared square array location is not the same as my current square:
                         if set(first_array) == set(pair_col) and  (i,j) != (row_ofcolcheck,j):
                             
-                            #print("PERFECT PAIR in the COLUMN", pair_col, "at COL location", (row_ofcolcheck,j))
                             
                             numbers_to_remove = first_array
                             
@@ -113,14 +104,11 @@ def perfect_pairs(grid):
                                     #look at each number in my new search array                                    
                                     for value in first_array: 
                                         
-                                        #print("checking", value, " in ", grid[r][j], "at COL location ", (r,j))
                                         
                                         if value in grid[r][j]:
-                                            #print(value, " needs to be removed from  ", grid[r][j], "at COL location ", (r,j))
 
                                             grid[r][j].remove(value)
                                             
-                                            #print(value, "was removed from ", grid[r][j], "at COL location ", (r,j))
                 box_start_row = i // 3
                 box_start_col = j // 3
 
@@ -135,7 +123,6 @@ def perfect_pairs(grid):
                             # if compare and first_arr are the same NUMBERS, but NOT the same position:
                             if first_array == pair_box and ( (i, j) != (row_pos, col_pos)):
                                 
-                               # print("fount a perfect pair in the BOX ", pair_box,  "at location ",  (row_pos, col_pos))
                                 
                                 # I found a pair, now I want to search for any other numbers that are in remaining arrays.
                                 numbers_to_remove = first_array
@@ -152,42 +139,19 @@ def perfect_pairs(grid):
                                             # look inside the array
                                             for value in box_square_to_remove:
                                                 
-                                                #print("checking each number ", value, "in", box_square_to_remove, "at BOX location" ,(alt_box_row, alt_box_col))
                                                 
                                                 # if the number exists in my numbers to remove AND its NOT in the i,j position AND my second pair position:
                                                 if value in numbers_to_remove:
                                                     
-                                                    #print(value, "Needs to be removed ", grid[alt_box_row][alt_box_col], "at BOX location", (alt_box_row, alt_box_col))
                                                     
                                                     box_square_to_remove.remove(value)
-                                                    
-                                                    
-                                                    #print(value, "was removed from ", grid[alt_box_row][alt_box_col], "at location", (alt_box_row, alt_box_col))
-                                                    
-    #basic_solve(grid)
+       
     return grid
 
 
-#print_updated_grid(pos_nums_grid)
-#test_test = basic_solve(pos_nums_grid)
-#original_test_test = copy.deepcopy(test_test)
-#hope  = perfect_pairs(test_test)
-
-#print("Printing HOPE")
 
 
 
-
-'''
-Additional Steps:
-
-
-
-
-
-
-
-'''
 
 
 

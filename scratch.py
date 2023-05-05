@@ -52,9 +52,6 @@ Returns a position (i,j) on the grid wiht the smallest array (unsolved square wi
 '''
 def find_array(grid):
    
-    #position = (0,0)
-    
-  
     for m in range(2,9):
         for i in range(9):
             for j in range(9):
@@ -62,8 +59,7 @@ def find_array(grid):
                     grid[i][j] = [grid[i][j]]
                     pass
                     # for m in range(10):
-                    
-                    #print("find array location", grid[i][j])
+
                 elif isinstance(grid[i][j], list):
                     if len(grid[i][j]) == m:
                         position = (i,j)
@@ -133,27 +129,6 @@ def valid_check(grid):
                             if grid[i][j] == grid[l][m] and (i, j) != (l,m):
                                 return False
     return True
-                        
-
-
-# def valid_board(valid_grid):
-#     for i in range(9):
-#         for j in range(9):
-#             if type(valid_grid[i][j]) is not list: valid_grid[i][j] = [valid_grid[i][j]]
-#             if len(valid_grid[i][j]) == 1:
-#                 print("checking ", valid_grid[i][j])
-#                 num = valid_grid[i][j] 
-#                 if num_row(valid_grid, num, (i,j)) :
-#                     print("My num", valid_grid[i][j], "was found in a row/col/box")  
-#                     return False
-#                 if  num_col(valid_grid, num, (i,j)):
-#                     print("found in a column")
-#                     return False
-                    
-#                 if num_inmini(valid_grid, num, (i,j)):
-#                     print("found in a box")
-#                     return False
-#     return True
 
 
 
@@ -185,7 +160,6 @@ def runthrough(grid):
         gridcl, count = check_lonely_nums(grida)
         print(" Candidate lines ")
         print_pos_grid(gridcl)
-        # print("solved squares ", remaining_arrays(grid))
         total_changes += count
         print("TOTAL CHANGES " , total_changes)
     
@@ -224,23 +198,18 @@ def check_status(grid):
     status = 0
     doub_pairs2 = dict()
     validb = valid_check(grid)
-    #print("valid ??? ", validb)
     double_count, doub_pairs = double_pair(grid)
     doub_pairs2 = doub_pairs
-    #print("doubp dict", doub_pairs2)
     
     if validb == False:
-       # print("Board is NOT VALID")
         status = 3 
         return status, doub_pairs2
         
     elif double_count > 0:  
-        #print("Found double pair, not unique board")
         status = 2
         return status , doub_pairs2
                 
     elif solved_square(grid) == 81 and validb == True:    
-        #print("Board is VALID and is COMPLETE")
         # add orig to check if a match? or keep out and let it be in the final method                 
         status = 1
         return status , doub_pairs2
@@ -262,23 +231,13 @@ Main solution method: Takes main (with arrays), original (completed board), over
 '''
 
 def solve_grid(main, original, overwrite):
-    #print("Original")
-   # print_grid(original)
-    #print(":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::")
-    #print(":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::")
-    #print("GRID _ o ")
+
     grid_o = copy.deepcopy(original)
-    #print_grid(grid_o)
-    #print(":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::")
-    #print(":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::")
+
     game_board = copy.deepcopy(overwrite)
-    #print("OVERWRITE : board to update for final gameboard")
-    #print_pos_grid(game_board)
-    #print(":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::")
-   # print(":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::")
-   # print("MAIN GRID to work from")
+
     grid = copy.deepcopy(main)
-    #print_pos_grid(grid)
+
     
         
     random_count = 0
@@ -286,20 +245,10 @@ def solve_grid(main, original, overwrite):
     position = set()
     start_over = 0
     
-   
-    # {1: "Solved and valid", 2: "Not Unique", 3: "Not valid solution"}
-    
-    #print("START SOLVE:::::::::::::::::::")
-    #print("solved squares ", solved_square(grid))
-   
 
-    # Try to solve grid with all methods
     runthrough(grid)
     status , doub_pairs = check_status(grid)
-    
-    #print("Status is ", status)
-    #print("Doub_pairs is ", doub_pairs)
-    
+
     continue_solve = True
     
     #temp variable for testing
@@ -315,8 +264,6 @@ def solve_grid(main, original, overwrite):
     
    
     while continue_solve == True:
-
-       # print(rand_list, "rand_list")
  
         # not actually getting solved square if not using arrays
         if solved_square(game_board) >= 40:
@@ -329,11 +276,9 @@ def solve_grid(main, original, overwrite):
             game_board = copy.deepcopy(overwrite)
             grid = copy.deepcopy(main) 
             position = set()
-           # print("This is the new grid")
-            #print_pos_grid(grid)
+
             start_over += 1
-                      
-           # print("SQUARES SOLVED IN NEW OVERWRITE ", solved_square(game_board))
+
             
             #set status to not get triggered until reset of check status
             status = 5
@@ -343,7 +288,6 @@ def solve_grid(main, original, overwrite):
            
             grid, backup2, position =  random_guessing(grid)
             
-            #print(".................. Adding to random list ....................")
             print("position after random method is ", position)
             if position != (10,10):  
                 rand_list.append(position)
@@ -352,73 +296,35 @@ def solve_grid(main, original, overwrite):
             print("rand list ", rand_list)
             backup = [*backup2]
             random_count += 1
-            #print("random count ", random_count)
-            #print("Printing POS grid at STATUS 0 (arrays remain) ")
-            #print_pos_grid(grid)
-           
-           
-    
+
         elif status == 1:
-            #print("Status was 1 - completed grid. Does it match??? ")
-            #print_grid(original)
-            # check if matched to original grid. 
-            #print_pos_grid(grid)
+
             if test_if_equal(grid, original) == True: 
-               # print("Board MATCHES!!!!")
-                #print("INIT solved squares ", solved_square(main))
-                #print("SQUARES SOLVED IN FINAL  ", solved_square(game_board))
-                #print("random count at complete", random_count)
-                #print("final count - rounds", count)
-                #print("Start over attempts: ", start_over)
-                
-                #print("Rand list at FINAL ", rand_list)
-                #print("Rand NUMS at final ", rand_nums)
+
                 continue_solve = False
-                #print("Actual game board ")
-                #print_grid(game_board)
+
                 break
  
             else:
-               # print("Board did not match")
-             
-               # print("random count ", random_count)
                 
                 #if a random was chosen, backtrack and add as clue, then retry.
                 if random_count > 0:
-                    
-                    
-                    #print("rand list is ", rand_list, "and first item is ")
-                    #rem_pos = rand_list[0]
-                    #print(rem_pos, "is first rem_pos from rand_list")                
+                
                     mismatch = find_mismatch(grid, grid_o, rand_list)
 
                     #if there is a mismatch, what is it, add as clue. 
                     #if mismatch != None:
                         
-                    #print("using mismatch, ", grid_o[mismatch[0]][mismatch[1]])
                     backtrack_num = grid_o[mismatch[0]][mismatch[1]]
                     game_board[mismatch[0]][mismatch[1]] = [backtrack_num]
-                    
-                    # else:
-                    #     rem_pos = rand_list[0]               
-                    #     backtrack_num = grid_o[rem_pos[0]][rem_pos[1]]
-                    #     print("backtrack num", backtrack_num)
-                    #     game_board[rem_pos[0]][rem_pos[1]] = [backtrack_num]
+
                 
-                    #add num as solved square to grid_c, start again with additional clue.
-                    
-                    #print("SQUARES SOLVED IN NEW OVERWRITE ", solved_square(game_board))
-              
+                    #add num as solved square to grid_c, start again with additional clue.              
                 
                     tryagain = copy.deepcopy(main)
                     grid = tryagain
                     grid[mismatch[0]][mismatch[1]] = [backtrack_num]
                 
-                    #print("GRID AFTER AT BOARD NOT MATCH")
-                   # print_pos_grid(grid)
-                
-                
-                   # print("grid corrected at STATUS 1", grid[mismatch[0]][mismatch[1]], "at position", mismatch)
                     rand_list.clear()
                     rand_nums.clear()
                     random_count = 0
@@ -426,7 +332,7 @@ def solve_grid(main, original, overwrite):
                 #if no randoms chosen, but board complete and doesn't match, just start over as board had duplicate soluation
                 # Could also just add a random clue, find array and add the solution.  
                 else:
-                  #  print("STARTING OVER ")
+
                     main, original, overwrite = create_new()
                     random_count = 0 
                     rand_list.clear()
@@ -435,11 +341,8 @@ def solve_grid(main, original, overwrite):
                     game_board = copy.deepcopy(overwrite)
                     grid = copy.deepcopy(main) 
                     position = set()
-                    #print("This is the new grid")
-                    #print_pos_grid(grid)
-                    start_over += 1
-                    
-                   # print("SQUARES SOLVED IN NEW OVERWRITE ", solved_square(game_board))
+
+                    start_over += 1                    
                     status = 0
                 
                 
@@ -454,23 +357,16 @@ def solve_grid(main, original, overwrite):
             
             r = doub_pos[0]
             c = doub_pos[1]
-        
             solution_num = grid_o[r][c]
             
             #set copy to have additional clue            
             game_board[r][c] = [solution_num]
-            print("SQUARES SOLVED IN NEW OVERWRITE ", solved_square(game_board))
             tryagain = copy.deepcopy(main)
             
             #reset grid to most recent back up for continued backsolving
             grid = backup2
             #update grid to additional clue
             grid[r][c] = [solution_num]
-            
-            
-            print("updated grid at STATUS 2", grid[r][c])
-            
-                 
             status = 0 
 
                 
@@ -513,11 +409,7 @@ def solve_grid(main, original, overwrite):
     
     return game_board, rand_nums, rand_list, grid_o
     
-    
-    
-           
-        
- 
+
     
 '''
 Finds first and smallest array and selects random number to add as solution to continue solving. 
@@ -559,9 +451,7 @@ def find_mismatch(grid,original, rand_list):
         for j in range(9):
             if grid[i][j] != original[i][j]:
                 mismatch.append((i,j))
-    #print("mismatches are ", mismatch)
-    #print("rand list is ", rand_list)
-    #return mismatch that was a random choice, if random_choice list exists            
+        
     if len(rand_list) != 0:
         for k in rand_list:
             for j in mismatch:
@@ -598,16 +488,6 @@ def create_new():
     return gridarray, original, arraycopy
 
 
-# gridarray, original, game_board = create_new()
-# # # # # #print_grid(original)
-# grid, rand_nums, rand_list, grid_o = solve_grid(gridarray, original, game_board)
-
-# # #print_grid(original)
-
-# test = get_solutions(final)   
-
-
-# print_pos_grid(grid)
 
 
     
