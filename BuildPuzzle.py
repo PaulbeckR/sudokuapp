@@ -1,7 +1,12 @@
 from random import *
+'''
+Initial build of completed and valid Sudoku puzzle. All rows / cols / box's only have numbers 1-9
 
+ 
 
+'''
 
+# Creates complete and valid Sudoku board
 def create_grid_fill():
 
 
@@ -9,23 +14,29 @@ def create_grid_fill():
     fill_grid(grid)
     return grid
 
-
+#Back solver to fill in grid with valid numbers only
 def fill_grid(grid):
+    #Get empty (0) square.
     empty = find_empty(grid)
+    
     if not empty:
+        #If none empty, board is complete.
         return True
     row, col = empty
     nums = [i for i in range(1, 10)]
     shuffle(nums)
+    #try random number 1-9 to enter into empty location.
     for num in nums:
         if is_valid(grid, (row, col), num):
             grid[row][col] = num
+            #check if completed grid.
             if fill_grid(grid):
                 return True
+            #reset square to 0 if next num not valid.
             grid[row][col] = 0
     return False
 
-
+#Find any value in grid still equal to 0 and return the position.
 def find_empty(grid):
     for i in range(9):
         for j in range(9):
@@ -33,33 +44,27 @@ def find_empty(grid):
                 return i, j
     return None
 
-
+#Check if number is valid: number for new square is not found in the same row / col / box.
 def is_valid(grid, pos, num):
-    
+    #check the row
     for i in range(9):
-       # print("checking position,", (pos[0], i), "with grid", grid[pos[0]][i])
         if grid[pos[0]][i] == num and pos[1] != i:
-            #print("NOT VALID,", (pos[0], i) ,num)
             
             return False
-
+    #check the col
     for i in range(9):
-       # print("checking position,", (i, pos[1]), "with grid", grid[i][pos[0]])
         if grid[i][pos[1]] == num and pos[0] != i:
-            #print("NOT VALID,", (i, pos[1]))
             return False
-
+    #check the square
     box_x = pos[1] // 3
     box_y = pos[0] // 3
     for i in range(box_y*3, box_y*3 + 3):
         for j in range(box_x*3, box_x*3 + 3):
-            #print("checking position,", (box_x, box_y), "with grid", grid[box_x][box_y])
             if grid[i][j] == num and (i, j) != pos:
-                #print("NOT VALID,", (box_x, box_y))
                 return False
     return True
 
-
+#Print grid using formating to look like Sudoku board in terminal. ** Used throughout program/files.
 def print_grid(grid):
     for i in range(9):
         if i % 3 == 0 and i != 0:
@@ -69,14 +74,6 @@ def print_grid(grid):
                 print("|", end=" ")
             print(grid[i][j], end=" ")
         print()
-
-
-#new_grid = create_grid_fill()
-
-#print_grid(new_grid)
-
-# print(new_grid)
-
 
 
 
