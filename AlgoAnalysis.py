@@ -322,9 +322,9 @@ def create_unique( orig_board, difficulty, max_count, clue_max):
 
         if count == max_count:
 
-            #print("COUNT IS ", count)
+            
             count = 0
-            #print("HELLOOOOOOOOOOOOOOOO")
+            
             global board_startover 
             board_startover += 1
             
@@ -344,8 +344,7 @@ def create_unique( orig_board, difficulty, max_count, clue_max):
           
                 if (glob_difflevel == difficulty) and (num_frequency(zerosboard) == True):  
                     global solved_after_run
-                    #print(solved_after_run, "final solved")
-                    print("good board")
+                    
                     return orig_board, zerosboard, 
                     
                 
@@ -355,7 +354,7 @@ def create_unique( orig_board, difficulty, max_count, clue_max):
             zerosboard[rand_row][rand_col] = remove_backup
 
    
-    print("Bad board")
+   
     return orig_board, zerosboard, 
    
 

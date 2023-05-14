@@ -15,20 +15,7 @@ side = base*base
 game = []
 
 
-def initial_board(grid):
-    game_board = []
-    
-    #81 squares 
-    squares = side*side
-    #bigger fraction = fewer numbers
-    empties = squares * 9 // 13
-    for p in sample(range(squares), empties):
-        grid[p//side][p % side] = 0
 
-    for line in grid:
-        game_board.append([n for n in line])
-        # print(*(f"{n or '.':{numSize}} " for n in line))
-    return game_board
 
 
 # need to check if game_board has at least one of each number

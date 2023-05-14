@@ -1,7 +1,7 @@
 from BuildPuzzle import *
 from PreparePuzzle import*
 from scratch import *
-
+import copy
 
 import random
 
@@ -117,25 +117,7 @@ def run_all_strategies(rungrid):
             
     return gridx , difficulty_dictionary
 
-def get_difficulty_level(board):
-    # Easy = 0 
-    # Medium = 1
-    # hard = 2 
-    
-    level = 0
-    grid, mydict = run_all_strategies(board)
-    
-    print(mydict)
-    
-    
- 
-    if  (mydict["Basic"] <= 10) and (mydict["Hidden"] >=4) or (mydict["Candidates"] >=4) or (mydict["Solved"] <=35):
-        level = 1 
-    elif (mydict["Xwing"] >= 1 ) or (mydict["Hidden"] >=8) or (mydict["Solved"] <= 30):
-        level =2
-        
- 
-    return level
+
 
 
 def get_difficulty_level2(mydict):
@@ -226,6 +208,7 @@ def get_random_num(grid):
 
 glob_difflevel = 9
 
+my_dict = dict()
 
 ''' Takes filled board and removes one num at a time'''
 def create_unique( orig_board, difficulty): 
@@ -265,10 +248,12 @@ def create_unique( orig_board, difficulty):
             if (comp_sq(zerosboard) < clue_max):
           
                 if (glob_difflevel == difficulty) and (num_frequency(zerosboard) == True):  
+                    print(my_dict)
                     return orig_board, zerosboard
         elif (solution_count == False) or (num_frequency(zerosboard) == False) :
             arrayboard[rand_row][rand_col] = remove_backup
             zerosboard[rand_row][rand_col] = remove_backup
+    print("BAD BOARD")
     return orig_board, zerosboard
    
 # Think this is in SCRATCH
@@ -284,14 +269,14 @@ def back_to_board(grid):
             if type(grid[i][j]) is list: [grid[i][j]] = grid[i][j]
     return grid
    
-
     
 def try_to_solve2 (array2, orig):
 
     arrayrun, diff_dict= run_all_strategies(array2)
     
     diff_level = get_difficulty_level2(diff_dict)
-  
+    global my_dict
+    my_dict = diff_dict
     
     global glob_difflevel
     glob_difflevel = diff_level
@@ -314,7 +299,7 @@ def try_to_solve2 (array2, orig):
     
     if (solutions >0) and (multiple_solutions == 0):
         return True
-    #elif multiple_solutions >= 1:
+   
     return False
     
 
@@ -330,7 +315,7 @@ def solve_loop (arrayb, zeros, og_board, solutions, multiple_solutions):
     something_else = 0
     second_solution = dict()
     key = 0
-    backup_arrays = copy.deepcopy(arrayb)
+  
     backup_zeros = copy.deepcopy(zeros)
     backup_zeros = back_to_board(backup_zeros)
 
@@ -342,7 +327,7 @@ def solve_loop (arrayb, zeros, og_board, solutions, multiple_solutions):
     tryzero = back_to_board(tryzero)
     # while there are still arrays after a runthgouh (should skip for most clue removals.)
     if find_array(arrayb) != None:   
-    #while count_loop < 25:
+    
         
         for i in range(9):
             for j in range(9):
@@ -383,23 +368,21 @@ def solve_loop (arrayb, zeros, og_board, solutions, multiple_solutions):
                                             second_solution[key] = solve_zeros
                                   
                                             multiple_solutions += 1
-                                        #continue
-                                    #continue
+                                   
                                         if multiple_solutions >= 1:
                                             return solutions, multiple_solutions
                                         elif test_if_equal(solve_zeros, og_board) == True:
                                         
-                                            #trycount +=1
+                           
                                             solutions += 1
-                                            #continue
+                                         
                                         else: 
 
                                             something_else += 1
                                     else:
 
                                         invalid_boards += 1
-                                    #solutions = 0
-                                    #multiple_solutions = 0
+                          
                             else: 
 
                                 invalid_boards += 1
@@ -416,7 +399,9 @@ def solve_loop (arrayb, zeros, og_board, solutions, multiple_solutions):
 
 def new_sudoku_board(difficulty):
     
+    
     complete_grid = create_grid_fill()
+
     orig, zeros = create_unique(complete_grid, difficulty)
     
     return zeros, orig
