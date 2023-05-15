@@ -306,13 +306,10 @@ def try_to_solve2 (array2, orig):
 def solve_loop (arrayb, zeros, og_board, solutions, multiple_solutions):
 
     valid_boards = 0
-    invalid_boards = 0
     count_loop = 0
     arrays_checked = dict()
-    invalid_boards = 0
     arrays_total = 0
     array_len = 0
-    something_else = 0
     second_solution = dict()
     key = 0
   
@@ -353,13 +350,10 @@ def solve_loop (arrayb, zeros, og_board, solutions, multiple_solutions):
                         
                             if fill_withsolve(solve_attempt, solve_zeros) == True: 
                                 solved_squares = comp_sq(solve_zeros)
-                                if solved_squares != 81:
-                                    #board not solved
-
-                                    invalid_boards += 1
-                                    continue
+                                if solved_squares == 81:
+                                    
                          
-                                else:
+                                
                                     if is_valid_fill(solve_zeros) == True:
                                         valid_boards += 1
                                 
@@ -369,23 +363,14 @@ def solve_loop (arrayb, zeros, og_board, solutions, multiple_solutions):
                                   
                                             multiple_solutions += 1
                                    
-                                        if multiple_solutions >= 1:
+                                            
                                             return solutions, multiple_solutions
                                         elif test_if_equal(solve_zeros, og_board) == True:
                                         
                            
                                             solutions += 1
                                          
-                                        else: 
-
-                                            something_else += 1
-                                    else:
-
-                                        invalid_boards += 1
-                          
-                            else: 
-
-                                invalid_boards += 1
+                                        
 
                         trysolve[i][j] = backup_sol
                         solve_attempt = trysolve
