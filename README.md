@@ -2,6 +2,18 @@
 SudokuApp
 
 
+
+How to run program in Visual Studio: 
+
+1. Environment: 
+    Pip install pygame, version 2.1.3.dev8
+
+2. Run main.py to run new sudoku game.
+
+
+
+
+
 Sudoku is a puzzle game where each row, column and 3x3 box of a 9x9 grid must only contain once instance of each number 1-9. Players receive a partially completed board to fill in the remaining numbers. 
 
 
