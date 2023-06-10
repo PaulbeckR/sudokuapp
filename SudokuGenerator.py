@@ -2,8 +2,35 @@
 Create final sudoku class that includes initial build of board and back solver. To merge BackSolver.py and BuildPuzzle.py files.
 
 '''
+import copy
 from random import shuffle
-from BackSolver import *
+#from BackSolver import *
+from PreparePuzzle import *
+from FindSolutions import *
+
+def is_valid_fill(grid):
+        for i in range(9):
+            for j in range(9):
+
+                if not is_valid(grid, (i,j) ,grid[i][j]):
+                    return False
+        return True
+    
+def is_valid(grid, pos, num):
+        for i in range(9):
+            if grid[pos[0]][i] == num and pos[1] != i:
+                return False
+            if grid[i][pos[1]] == num and pos[0] != i:
+                return False
+        box_x = pos[1] //3
+        box_y = pos[0] //3
+        for i in range(box_y *3, box_y *3 + 3):
+            for j in range(box_x * 3, box_x *3 + 3):
+                if grid[i][j] == num and (i,j) != pos:
+                    return False
+        return True
+    
+
 
 class SudokuBoard:
     def __init__(self, grid = None):
@@ -18,7 +45,7 @@ class SudokuBoard:
         
       # Getter for the difficulty dictionary
     def get_difficulty_dict(self):
-        return self.my_dict
+        return self.difficulty_dictionary
 
     # Getter for the zeros board
     def get_zeros_board(self):
@@ -46,19 +73,19 @@ class SudokuBoard:
         return None
     
     #checks if the number entered is valid
-    def is_valid(self, grid, pos, num):
-        for i in range(9):
-            if self.grid[pos[0]][i] == num and pos[1] != i:
-                return False
-            if self.grid[i][pos[1]] == num and pos[0] != i:
-                return False
-        box_x = pos[1] //3
-        box_y = pos[0] //3
-        for i in range(box_y *3, box_y *3 + 3):
-            for j in range(box_x * 3, box_x *3 + 3):
-                if self.grid[i][j] == num and (i,j) != pos:
-                    return False
-        return True
+    # def is_valid(self, grid, pos, num):
+    #     for i in range(9):
+    #         if self.grid[pos[0]][i] == num and pos[1] != i:
+    #             return False
+    #         if self.grid[i][pos[1]] == num and pos[0] != i:
+    #             return False
+    #     box_x = pos[1] //3
+    #     box_y = pos[0] //3
+    #     for i in range(box_y *3, box_y *3 + 3):
+    #         for j in range(box_x * 3, box_x *3 + 3):
+    #             if self.grid[i][j] == num and (i,j) != pos:
+    #                 return False
+    #     return True
     # part of creating initial sudoku solution
     def fill_grid(self):
         empty = self.find_empty()
@@ -69,7 +96,7 @@ class SudokuBoard:
         shuffle(nums)
 
         for num in nums:
-            if self.is_valid(self.grid, (row, col), num):
+            if is_valid(self.grid, (row, col), num):
                 self.grid[row][col] = num
                 
                 if self.fill_grid():
@@ -131,17 +158,15 @@ class SudokuBoard:
 
             # CandidateLines.py : candidate lines
             gridcl, count = check_lonely_nums(gridb)
-            
             candidate_lines = candidate_lines + count
+            
             #removes candidates from any identified x-wings
             gridx, xwingcount = xwing(gridcl)
             xwings = xwingcount + xwings
 
             #loop through grid and remove any candidates that are no longer valid
             update_changes, gridx = update_array(gridx)
-            
             basic = update_changes + basic
-            
             total_changes = (changes + count + removed + xwingcount)
 
         solved_after_run = solved_square(gridx)
@@ -158,34 +183,23 @@ class SudokuBoard:
 
         if  (mydict["Basic"] <= 10) and (mydict["Hidden"] >=4) or (mydict["Candidates"] >=4):
             level = 1 
-        elif (mydict["Xwing"] >= 1 ):
-            level =2
-            
-        #self.glob_difflevel = level
-        
+        elif (mydict["Xwing"] >= 1 ) and (mydict["Solved"] >= 60):
+            level = 2
+        elif (mydict["Solved"] <= 50):
+            level  = 3 
+
         return level
 
 
     #checks if each square is valid
-    def is_valid_fill(self):
-        for i in range(9):
-            for j in range(9):
-
-                if not self.is_valid(self.grid, (i,j) ,self.grid[i][j]):
-                    return False
-        return True
-
-    # #shuffles posisitions
-    # def shuffle_positions(self):
-
-    #     all_positions = []
+    # def is_valid_fill(self):
     #     for i in range(9):
     #         for j in range(9):
-    #             all_positions.append((i,j))
-                
-    #     random.shuffle(all_positions)
 
-    #     return all_positions
+    #             if not self.is_valid(self.grid, (i,j) ,self.grid[i][j]):
+    #                 return False
+    #     return True
+
 
     #back solver to solve board, connects to solve_loop to find all possible solutions to sudoku board
     def fill_withsolve(self, gridarry, gridzero):
@@ -196,14 +210,11 @@ class SudokuBoard:
 
         row, col = empty
 
-
-        '''could use gridarray, just never update the arrays, '''
-
         nums = gridarry[row][col]    
         num_valid = 0
                     
         for num in nums:
-            if self.is_valid(gridzero, (row, col), num):
+            if is_valid(gridzero, (row, col), num):
                 num_valid +=1
                 gridzero[row][col]= num
                 if self.fill_withsolve(gridarry, gridzero):
@@ -217,21 +228,8 @@ class SudokuBoard:
     def get_random_num(self):
         non_zero_positions = [(i,j) for i in range(9) for j in range(9) if self.grid[i][j] != 0]
         return random.choice(non_zero_positions)
-        # rows = [0,1,2,3,4,5,6,7,8]
-        # cols = [0,1,2,3,4,5,6,7,8]
-
-        # random_num = 0
-        # while random_num == 0:
-
-        #     ran_row = random.choice(rows)
-        #     ran_col = random.choice(cols)
-
-        #     random_num = self.grid[ran_row][ran_col]
-            
-
-        # if random_num != 0:
-        #     return ran_row, ran_col
-
+    
+    
 
 
    #main backsolving function: removes one square from solution and then checks for unique solutions
@@ -242,9 +240,10 @@ class SudokuBoard:
         zerosboard = copy.deepcopy(orig_board)
         count = 0
         clue_max = 35
-
+        valid_board = False
         #sets limit to game board at 17 clues
-        while comp_sq(zerosboard) > 17:
+        #while comp_sq(zerosboard) > 17:
+        while valid_board == False:
 
             rand_row = 0
             rand_col = 0
@@ -255,30 +254,44 @@ class SudokuBoard:
             arrayboard[rand_row][rand_col] = 0
             
             # try to solve after removing a square, find possible solutions
-            solution_count = self.try_to_solve2(arrayboard,  orig_board)
+            unique_board = self.try_to_solve2(arrayboard,  orig_board)
             count  += 1
-
             #limit set to start over with new solution board
-            if count == 100:
+            if count == 150:
                 count = 0
                 print("Reset" )
                 complete_grid2 = self.create_new_grid()
                 arrayboard = copy.deepcopy(complete_grid2)
                 zerosboard = copy.deepcopy(complete_grid2)
                 orig_board = complete_grid2
+                
                 continue
+            
 
-            if solution_count == True:
+            if unique_board == True:
                 if (comp_sq(zerosboard) < clue_max):
+                    
                     self.glob_difflevel = self.get_difficulty_level2()
                     if (self.glob_difflevel == difficulty) and (self.num_frequency() == True):  
-                        print(my_dict)
-                        return orig_board, zerosboard
-            elif (solution_count == False) or (self.num_frequency() == False) :
+                        print(self.difficulty_dictionary)
+                        print(" GOT A GOOD ONE")
+                        print(unique_board, "is unique board")
+                        valid_board = True
+                        break
+            elif (unique_board == False) or (self.num_frequency() == False) :
                 arrayboard[rand_row][rand_col] = remove_backup
                 zerosboard[rand_row][rand_col] = remove_backup
-        print("BAD BOARD")
+                
+                
+        print(valid_board)
+        print(comp_sq(zerosboard))
+        #return (orig_board, zerosboard) if valid_board else (None, None)
         return orig_board, zerosboard
+        
+        
+        
+        
+        
 
         # returns a game board with possible solution arrays to zeros for any unsolved square
     def back_to_board(self, grid):
@@ -298,38 +311,37 @@ class SudokuBoard:
     def try_to_solve2 (self,array2, orig):
 
         arrayrun = self.run_all_strategies(array2)
-
-        # diff_level = self.get_difficulty_level2(diff_dict)
         
-        # self.my_dict = diff_dict
-
         
-        # self.glob_difflevel = diff_level
+        
 
         Aa = copy.deepcopy(arrayrun)
         Zz = self.back_to_board(arrayrun)
 
         
-        mult= 0
-        sol = 0 
+         
 
         if (comp_sq(Zz) == 81):
             return True
 
-        solutions, multiple_solutions = self.solve_loop(Aa, Zz, orig, sol, mult)
+        solutions, multiple_solutions = self.solve_loop(Aa, Zz, orig)
 
-
-        if (solutions >0) and (multiple_solutions == 0):
+        #Unique Board if board can only be solved one time, and it matches the original board.
+        if (solutions > 0) and (multiple_solutions == 0):
+            print("multiple solutions", multiple_solutions)
             return True
 
         return False
 
     # tries all remaining possible solutions 
-    def solve_loop (self,arrayb, zeros, og_board, solutions, multiple_solutions):
+    def solve_loop (self,arrayb, zeros, og_board):
 
         valid_boards = 0
+        solutions = 0 
+        multiple_solutions = 0
         
-        
+        print(multiple_solutions, "helloooooo")
+
         arrays_checked = dict()
 
         arrays_total = 0
@@ -356,9 +368,10 @@ class SudokuBoard:
                         
                         for num in trynums:
                             
-                            if self.is_valid(tryzero, (i, j), num):
+                            if is_valid(tryzero, (i, j), num):
                                 solve_attempt = copy.deepcopy(try_arrays)
                                 solve_attempt[i][j] = [num]
+                                #reduce search effort by updating arrays.
                                 mini_arr_update(solve_attempt, (i,j))
 
                                 solve_zeros = copy.deepcopy(solve_attempt)
@@ -366,22 +379,31 @@ class SudokuBoard:
                             
                                 if self.fill_withsolve(solve_attempt, solve_zeros) == True: 
                                     solved_squares = comp_sq(solve_zeros)
-                                    if solved_squares == 81:
-                                        #board not solved
-
-                                        if self.is_valid_fill(solve_zeros) == True:
-                                            valid_boards += 1
+                                    if solved_squares != 81:
+                                        #board not completely solved, try another number
+                                        continue
                                     
+                                    
+                                    else:
+                                        #board has been solved completely. Is it valid?
+                                        if is_valid_fill(solve_zeros) == True:
+                                            valid_boards += 1
+                                            #Board valid, is it NOT the same as original? Add to multiple solutions.
                                             if test_if_equal(solve_zeros, og_board) == False:
                                                 key += 1                                        
                                                 second_solution[key] = solve_zeros
                                         
                                                 multiple_solutions += 1
-                                        
-                                                if multiple_solutions >= 1:
-                                                    return solutions, multiple_solutions
+                                            # End loop if multiple found. No need to check more numbers.
+                                                continue
+                                            # If it does match, it adds to solutions (could just continue instead though, must try all)
                                             elif test_if_equal(solve_zeros, og_board) == True:
                                                 solutions += 1
+                                if multiple_solutions >= 1:
+                                    print(multiple_solutions, "helloooooo")
+                                    break
+                                    #return solutions, multiple_solutions
+                                            
                             try_arrays[i][j] = backup_sol
                             solve_attempt = try_arrays
 
@@ -393,21 +415,29 @@ class SudokuBoard:
 
     #creates new solution and new game board
     def new_sudoku_board(self, difficulty):
-
+        
 
         complete_grid = self.create_new_grid()
 
         orig, zeros = self.create_unique(complete_grid, difficulty)
+        
+        # if zeros == None:
+        #     print("bad board, start over")
+        #     self.new_sudoku_board(difficulty)
+        # else:
+                      
 
-        return zeros, orig
+        return orig, zeros
     
     
-sudoku = SudokuBoard()
-zeros, orig = sudoku.new_sudoku_board(2)
+# sudoku = SudokuBoard()
+# orig, zeros = sudoku.new_sudoku_board(2)
 
-difficulty_dict = sudoku.get_difficulty_dict()
-zeros_board = sudoku.get_zeros_board()
-solution_board = sudoku.get_solution_board()
-print(zeros)
+# difficulty_dict = sudoku.get_difficulty_dict()
+# zeros_board = sudoku.get_zeros_board()
+# solution_board = sudoku.get_solution_board()
+# print("HELLO")
+# print(zeros)
 
-sudoku.print_grid(zeros)
+# sudoku.print_grid(zeros)
+# print(difficulty_dict)

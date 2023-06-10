@@ -406,21 +406,21 @@ def only_option2(gamegrid):
    
 
 # Used throughotu program and in main backsolver to compare grids.
-def test_if_equal(game_grid, original):
-    orig = []
-    test = []
+# def test_if_equal(game_grid, original):
+#     orig = []
+#     test = []
     
-    for i in range(9):
-        for j in range(9):
+#     for i in range(9):
+#         for j in range(9):
             
-            o = original[i][j]
-            t = game_grid[i][j]
-            #print(t , "is t ")
-            if type(t) is not int: [t] = t
-            if o != t:
-               # print("Doesnt match at original/ test ", (i,j) , o , t )
-                return False
-    return True
+#             o = original[i][j]
+#             t = game_grid[i][j]
+#             #print(t , "is t ")
+#             if type(t) is not int: [t] = t
+#             if o != t:
+#                # print("Doesnt match at original/ test ", (i,j) , o , t )
+#                 return False
+#     return True
                 
             
 def basic_solve2(grid):

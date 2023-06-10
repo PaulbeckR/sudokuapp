@@ -1,8 +1,7 @@
-from BuildPuzzle import *
+#from BuildPuzzle import *
 from PreparePuzzle import *
 from FindSolutions import *
 from CandidateLines import *
-from TestingDisplay import *
 
 
 '''

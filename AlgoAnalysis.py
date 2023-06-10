@@ -5,6 +5,7 @@ from scratch import *
 import pandas as pd
 import time 
 import csv
+import copy
 
 '''
 Solving time: Measure the average time taken to solve a Sudoku puzzle.
