@@ -124,13 +124,17 @@ def get_difficulty_level2(mydict):
     # Easy = 0 
     # Medium = 1
     # hard = 2 
+    # very hard = 3 
     
     level = 0
 
     if  (mydict["Basic"] <= 10) and (mydict["Hidden"] >=4) or (mydict["Candidates"] >=4):
         level = 1 
-    elif (mydict["Xwing"] >= 1 ):
-        level =2
+    elif (mydict["Xwing"] >= 1 ) and (mydict["Solved"] >= 60):
+        level = 2
+    elif (mydict["Xwing"] >= 1 ) and (mydict["Solved"] <= 60):
+        level  = 3 
+
         
     #global difficulty_level
     return level
@@ -244,7 +248,7 @@ def create_unique( orig_board, difficulty):
             orig_board = complete_grid2
             continue
   
-        if solution_count == True:
+        if (solution_count == True):
             if (comp_sq(zerosboard) < clue_max):
           
                 if (glob_difflevel == difficulty) and (num_frequency(zerosboard) == True):  
@@ -306,40 +310,29 @@ def try_to_solve2 (array2, orig):
 def solve_loop (arrayb, zeros, og_board, solutions, multiple_solutions):
 
     valid_boards = 0
-    invalid_boards = 0
     count_loop = 0
     arrays_checked = dict()
-    invalid_boards = 0
     arrays_total = 0
     array_len = 0
-    something_else = 0
     second_solution = dict()
     key = 0
-  
     backup_zeros = copy.deepcopy(zeros)
     backup_zeros = back_to_board(backup_zeros)
-
-    
     trysolve = copy.deepcopy(arrayb)
-    
-    
     tryzero = copy.deepcopy(arrayb)
     tryzero = back_to_board(tryzero)
     # while there are still arrays after a runthgouh (should skip for most clue removals.)
     if find_array(arrayb) != None:   
-    
-        
         for i in range(9):
             for j in range(9):
                 if tryzero[i][j] == 0:
+                    
                     backup_sol = trysolve[i][j]
-
                     trynums = arrayb[i][j]
                     arrays_total += 1
                     array_len = array_len + len(trynums)
                     arrays_checked[(i,j)] = trynums
-                    
-                    
+
                     for num in trynums:
                         count_loop += 1
                         if is_valid(tryzero, (i, j), num):
@@ -355,37 +348,20 @@ def solve_loop (arrayb, zeros, og_board, solutions, multiple_solutions):
                                 solved_squares = comp_sq(solve_zeros)
                                 if solved_squares != 81:
                                     #board not solved
-
-                                    invalid_boards += 1
                                     continue
-                         
                                 else:
                                     if is_valid_fill(solve_zeros) == True:
                                         valid_boards += 1
-                                
                                         if test_if_equal(solve_zeros, og_board) == False:
+                                            
                                             key += 1                                        
                                             second_solution[key] = solve_zeros
-                                  
                                             multiple_solutions += 1
                                    
                                         if multiple_solutions >= 1:
                                             return solutions, multiple_solutions
                                         elif test_if_equal(solve_zeros, og_board) == True:
-                                        
-                           
                                             solutions += 1
-                                         
-                                        else: 
-
-                                            something_else += 1
-                                    else:
-
-                                        invalid_boards += 1
-                          
-                            else: 
-
-                                invalid_boards += 1
 
                         trysolve[i][j] = backup_sol
                         solve_attempt = trysolve

@@ -1,5 +1,9 @@
-from BuildPuzzle import*
+#from BuildPuzzle import*
 import random
+from GridDict import *
+from Hidden import*
+from CandidateLines import*
+from FindSolutions import*
 """
 Initial code to remove random numbers from the board to create a Sudoku game board. 
 
@@ -8,40 +12,17 @@ Initial code to remove random numbers from the board to create a Sudoku game boa
 
 """
 
-base = 3
-side = base*base
 
-# method for removing numbers. Mirroring?
-game = []
-
-
-
-
-
-# need to check if game_board has at least one of each number
-def all_nums(grid):
-    
-    numbers = set()
+'''Counts how many single digit squares are in board'''
+def solved_square(grid):
+    count = 0
     for i in range(9):
         for j in range(9):
-            
-            num = grid[i][j]
-            numbers.add(num)
-    if len(numbers) < 9:
-        return False
-    return True
-            
-def new_game_board(grid):
-      
-    tryagain = True
+            if type(grid[i][j]) is not list: grid[i][j] = [grid[i][j]]
 
-    while tryagain == True:
-        
-        game = initial_board(grid)
-        if all_nums(game) == True:
-            tryagain = False
-            return game
-             
+            if len(grid[i][j]) == 1:
+                count += 1
+    return count             
 
 
 # Determin how many squares have a number that is not 0. 
@@ -98,7 +79,37 @@ def completed_count(game_board):
     return completed
 
 
+def find_array(grid):
+   
+    for m in range(2,9):
+        for i in range(9):
+            for j in range(9):
+                if type(grid[i][j]) is int:
+                    grid[i][j] = [grid[i][j]]
+                    pass
+                    # for m in range(10):
 
+                elif isinstance(grid[i][j], list):
+                    if len(grid[i][j]) == m:
+                        position = (i,j)
+                        return position
+    return None
+
+def test_if_equal(game_grid, original):
+    orig = []
+    test = []
+    
+    for i in range(9):
+        for j in range(9):
+            
+            o = original[i][j]
+            t = game_grid[i][j]
+            #print(t , "is t ")
+            if type(t) is not int: [t] = t
+            if o != t:
+               # print("Doesnt match at original/ test ", (i,j) , o , t )
+                return False
+    return True
 
 '''Takes a sudoku board with missing squares. Identifies for all elements that are =  0 (not completed) 
 what possible numbers 0-9 may be possible. Stores these possible numbers in a new grid called possible_numbers_grid 

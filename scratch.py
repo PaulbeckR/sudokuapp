@@ -5,7 +5,7 @@ from CandidateLines import *
 from Hidden import *
 
 
-from TestingDisplay import *
+
 
 from GridDict import*
 
@@ -112,16 +112,7 @@ def valid_check(grid):
 
 
 
-'''Counts how many single digit squares are in board'''
-def solved_square(grid):
-    count = 0
-    for i in range(9):
-        for j in range(9):
-            if type(grid[i][j]) is not list: grid[i][j] = [grid[i][j]]
 
-            if len(grid[i][j]) == 1:
-                count += 1
-    return count
         
 ''' Applies all strategies to board with available arrays'''
 

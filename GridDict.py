@@ -1,7 +1,6 @@
 from itertools import combinations
-from BuildPuzzle import *
+#from BuildPuzzle import *
 from PreparePuzzle import *
-from TestingDisplay import *
 from FindSolutions import *
 from Hidden import *
 
